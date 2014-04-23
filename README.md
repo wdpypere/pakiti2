@@ -1,4 +1,4 @@
-pakiti2
+Pakiti
 =======
 
-Patching status system
+Patching status system. More information in README file.
