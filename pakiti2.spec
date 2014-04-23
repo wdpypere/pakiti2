@@ -1,11 +1,11 @@
-Version: 2.1.3
-Name: pakiti
-Release: 2-1
+Version: 2.1.5
+Name: pakiti2
+Release: 1
 
 License: BSD
 Source: http://pakiti.sourceforge.net/rpms/%{name}/%{name}-%{version}.tar.gz
 Vendor: CESNET/CERN
-BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
+#BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Packager: Michal Prochazka <michalp@ics.muni.cz>
 Summary: Patching status monitoring tool.
 Group: Utilities/System
@@ -76,9 +76,9 @@ install -d %{buildroot}/%{_localstatedir}/www/pakiti2/config
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/docs
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/img
+install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/api
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/feed
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/link
-install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/api
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/etc
@@ -134,7 +134,7 @@ install -m644   www/pakiti/tags_sites.php   %{buildroot}/%{_localstatedir}/www/p
 
 install -m644   www/pakiti/api/cve.php   %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/api/cve.php
 install -m644   www/pakiti/api/cve_stats.php   %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/api/cve_stats.php
-install -m644   www/pakiti/api/tag_sites.php   %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/api/cve_sites.php
+install -m644   www/pakiti/api/tags_sites.php   %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/api/tags_sites.php
 
 install -m644   www/pakiti/img/link.gif %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/img/link.gif
 install -m644   www/pakiti/img/mark.gif %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/img/mark.gif
@@ -144,9 +144,9 @@ install -m644   www/pakiti/img/os_not_installed.gif %{buildroot}/%{_localstatedi
 
 install -m644   www/feed/index.php     %{buildroot}/%{_localstatedir}/www/pakiti2/www/feed/index.php
 
-ln -s ../pakiti/cves.php www/link/cves.php
-ln -s ../pakiti/packages.php www/link/packages.php
-ln -s ../pakiti/pakiti.css www/link/pakiti.css
+#ln -s ../pakiti/cves.php www/link/cves.php
+#ln -s ../pakiti/packages.php www/link/packages.php
+#ln -s ../pakiti/pakiti.css www/link/pakiti.css
 
 %files client-manual
 %defattr(-,root,root)
@@ -164,17 +164,19 @@ ln -s ../pakiti/pakiti.css www/link/pakiti.css
 %attr(0755,root,root) %{_sysconfdir}/cron.daily/pakiti2-client-update
 %attr(0755,root,root) /usr/sbin/pakiti2-client
 %config(noreplace)    %{_sysconfdir}/pakiti2/pakiti2-client.conf
-%doc README
+%doc client/README
 
 %files server
 %defattr(-,root,root)
 %attr(0664,root,root) %{_localstatedir}/www/pakiti2/scripts/*
+%attr(0664,root,root) %{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/*
 
 %attr(0640,root,apache) %{_localstatedir}/www/pakiti2/config/config.php
 
 %attr(0664,root,root) %{_localstatedir}/www/pakiti2/include/*.php
 
 %attr(0664,root,root) %{_localstatedir}/www/pakiti2/www/pakiti/*.php
+%attr(0664,root,root) %{_localstatedir}/www/pakiti2/www/pakiti/favicon.ico
 %attr(0664,root,root) %{_localstatedir}/www/pakiti2/www/pakiti/pakiti.css
 %attr(0664,root,root) %{_localstatedir}/www/pakiti2/www/pakiti/img/*.gif
 
@@ -191,7 +193,7 @@ ln -s ../pakiti/pakiti.css www/link/pakiti.css
 %doc docs/pakiti2.apache2
 %doc docs/pakiti2_configuration_example_Debian_Ubuntu_SL_SLC.sql
 %doc docs/pakiti2_configuration_example_RH_SL_SLC.sql
-%doc README
+%doc README.md
 
 %post client-manual
 #if [ "$1" = 1 ]; then
