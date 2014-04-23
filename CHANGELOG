@@ -1,0 +1,67 @@
+* Tue Feb 12 2013 Michal Prochazka <michalp@ics.muni.cz>
+- Pakiti 2.1.5 released
+- Bug fixes
+- CVE Tags, allow to report selected CVEs which are really dangerous
+- CVE Exceptions, particular package version can have an exception from the CVE Tag
+- API, currenlty only reports, which can viewed as an XML or CVS files
+- Pakiti client generator, client can be downloaded with predefined configuration from the GUI
+- Changes due to different format of OS name in RedHat OVAL
+- Instalation package contains default configuration for well know OS
+- Pakiti client
+  - timeout
+  - parameters can be passed by configuration file, or command line paramaters or can be set directly inside the pakiti-client 
+
+* Thr Sep 16 2010 Michal Prochazka <michalp@ics.muni.cz>
+- Pakiti 2.1.4 released 16/09/2010
+- Bug fixes
+- Support for HTTP proxy on the server
+- RPM based repositories can be defined also by repomd.xml file
+- Accepts repository definition files in bz2 compression
+- Added force option to the repository_updates.php script
+- Autorization accepts both REMOTE_USER and SSL_CLIENT_S_DN
+- Performance optimizations
+- Unused OSes can be deleted
+- Pakiti client
+  - automatic detection of transport mechanism
+  - errors are printed to the stderr
+  - OS detection only for Debian based systems others are detected on the server side
+  - added option that enables statisctics of the reports
+  - added command line option -c which specifies configuration file 
+
+* Fri Jun 11 2010 Michal Prochazka <michalp@ics.muni.cz>
+- Pakiti 2.1.3 release
+- bug fixes
+- little changes in the DB scheme
+- added support for interface selection in the pakiti2-client
+
+* Thu May 12 2010 Michal Prochazka <michalp@ics.muni.cz>
+- bug fixes
+- support for authZ
+- performance imporovements
+- add support for proxy clients
+
+* Fri Mar 21 2010 Michal Prochazka <michalp@ics.muni.cz>
+- serious bug fix
+- statistics in all hosts views
+
+* Fri Mar 19 2010 Michal Prochazka <michalp@ics.muni.cz>
+- Pakiti 2.1.1-2 release
+- bug fixes
+- added full support for the PHP4
+- added asynchronous mode
+- added anonymous links
+- added optional report - outdated packages (thanks to Catalin Dumitrescu)
+
+* Tue Jan 26 2010 Michal Prochazka <michalp@ics.muni.cz>
+- Pakiti 2.1-2 release
+- function process_rpm_pkgs is now split into two parts, the first one using
+  XLMReader and the second one using DOMXML. PHP4 doesn't have XMLReader
+
+* Tue Jan 11 2010 Michal Prochazka <michalp@ics.muni.cz>
+- Pakiti 2.1-1 release
+- checking the arch for the packages from RPM repositories
+- fixed wrong unique key in act_version table
+- fixed parsing the responce from Debian and RH systems
+
+* Mon Nov 30 2009 Michal Prochazka <michalp@ics.muni.cz>
+- Initial Pakiti 2.1 release
