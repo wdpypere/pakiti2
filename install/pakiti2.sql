@@ -235,7 +235,7 @@ CREATE TABLE `pkgs_exceptions` (
   `modifier` varchar(255) default NULL,
   `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `uniq` (`pkg_id`,`version`,`rel`,`cve_name`),
+  UNIQUE KEY `uniq` (`pkg_id`,`version`,`rel`,`arch`,`cve_name`),
   KEY `pkg_id` (`pkg_id`)
 ) ENGINE=MyISAM  DEFAULT;
 
