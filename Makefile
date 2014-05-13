@@ -1,3 +1,6 @@
+version := ${shell grep 'Version:' pakiti2.spec | awk -F: '{print $$2}' | \
+                sed -e '1,$$s/ //g' }
+
 all: rpm
 
 clean:
@@ -5,9 +8,9 @@ clean:
 	rm -f pakiti2-client-*.rpm pakiti2-server-*.rpm
 rpm:
 	mkdir -p /tmp/pakiti_rpm_root /tmp/pakiti_rpm_root/BUILD /tmp/pakiti_rpm_root/RPMS /tmp/pakiti_rpm_root/RPMS/i386 /tmp/pakiti_rpm_root/SOURCES /tmp/pakiti_rpm_root/SPECS  /tmp/pakiti_rpm_root/SRPMS /tmp/pakiti_rpm_root/BUILDROOTDIR
-	mkdir /tmp/pakiti_rpm_root/SOURCES/pakiti2-2.1.5/
-	cp -r * /tmp/pakiti_rpm_root/SOURCES/pakiti2-2.1.5/
-	tar czf /tmp/pakiti_rpm_root/SOURCES/pakiti2-2.1.5.tar.gz -C /tmp/pakiti_rpm_root/SOURCES pakiti2-2.1.5
+	mkdir /tmp/pakiti_rpm_root/SOURCES/pakiti2-${version}/
+	cp -r * /tmp/pakiti_rpm_root/SOURCES/pakiti2-${version}/
+	tar czf /tmp/pakiti_rpm_root/SOURCES/pakiti2-${version}.tar.gz -C /tmp/pakiti_rpm_root/SOURCES pakiti2-${version}
 	cp pakiti2.spec /tmp/pakiti_rpm_root/SPECS
 	rpmbuild --define '_sourcedir /tmp/pakiti_rpm_root/SOURCES' --define '_builddir /tmp/pakiti_rpm_root/BUILD' --define '_rpmdir /tmp/pakiti_rpm_root/RPMS' --define '_buildrootdir /tmp/pakiti_rpm_root/BUILDROOTDIR' --define '_topdir /tmp/pakiti_rpm_root' --define '_srcrpmdir /tmp/pakiti_rpm_root/SRPMS' -ba pakiti2.spec
 	cp /tmp/pakiti_rpm_root/RPMS/noarch/* .
