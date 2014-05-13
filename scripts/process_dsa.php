@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-$config = '/etc/pakiti/pakiti-server.conf';
+include_once("../config/config.php");
 include_once("../include/functions-dan.php");
 include_once("../include/mysql_connect.php");
 

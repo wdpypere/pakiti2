@@ -3,8 +3,7 @@
 # Process oval data for RedHat/Sceintific Linux
 # Notice: In OVAL for RH there is no distinguish between i686 and x86_64
 
-$config = '/etc/pakiti/pakiti-server.conf';
-#include_once("../config/config.php");
+include_once("../config/config.php");
 include_once("../include/functions.php");
 include_once("../include/mysql_connect.php");
 
