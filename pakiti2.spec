@@ -45,7 +45,7 @@ central Pakiti server using openssl s_client or curl.
 
 %package server
 BuildArch: noarch
-Requires: webserver, mysql-server, php , php-mysql, php-xml
+Requires: webserver, mysql-server, php , php-mysql, php-xml, mod_ssl
 Summary: Pakiti server - Patching status system.
 Group: Utilities/System
 Conflicts: pakiti-server
