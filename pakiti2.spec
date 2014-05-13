@@ -25,6 +25,7 @@ Requires: openssl
 Summary: Client for the Pakiti (patching status monitoring tool) using openssl or curl for transport.
 Group: Utilities/System
 BuildArch: noarch
+Conflicts: pakiti-client-manual
 
 %description client-manual
 Runs rpm -qa or dpkg -l, depends on the linux distro. Results are sent to the
@@ -36,6 +37,7 @@ Requires: openssl
 Summary: Client for the Pakiti (patching status monitoring tool) using openssl or curl for transport.
 Group: Utilities/System
 BuildArch: noarch
+Conflicts: pakiti-client
 
 %description client
 Runs rpm -qa or dpkg -l, depends on the linux distro. Results are sent to the
@@ -46,6 +48,7 @@ BuildArch: noarch
 Requires: webserver, mysql-server, php , php-mysql, php-xml
 Summary: Pakiti server - Patching status system.
 Group: Utilities/System
+Conflicts: pakiti-server
 
 %description server
 Server logic and web interface.
