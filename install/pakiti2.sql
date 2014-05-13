@@ -14,7 +14,7 @@ CREATE TABLE `act_version` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `arch_id` (`arch_id`,`os_group_id`,`pkg_id`),
   KEY `pkg_id` (`pkg_id`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `arch`;
 
@@ -24,7 +24,7 @@ CREATE TABLE `arch` (
   `arch` char(15) default NULL,
   PRIMARY KEY  (`id`),
   KEY `arch_index` (`arch`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `cve`;
 
@@ -35,7 +35,7 @@ CREATE TABLE `cve` (
   UNIQUE KEY `cve_name` (`cve_name`,`cves_id`),
   KEY `cve_name_2` (`cve_name`),
   KEY `cves_id` (`cves_id`)
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `cve_statistics`;
 
@@ -51,7 +51,7 @@ CREATE TABLE `cve_statistics` (
   KEY `cve_name` (`cve_name`),
   KEY `tag` (`tag`),
   KEY `date` (`date`)
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `cve_tags`;
 
@@ -66,7 +66,7 @@ CREATE TABLE `cve_tags` (
   `modifier` varchar(255) default NULL,
   `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `cves`;
 
@@ -90,7 +90,7 @@ CREATE TABLE `cves` (
   KEY `cve_id` (`cve_id`),
   KEY `i_pkg_id` (`pkg_id`),
   KEY `cves_os_id` (`cves_os_id`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `cves_os`;
 
@@ -100,7 +100,7 @@ CREATE TABLE `cves_os` (
   `os_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`,`os_id`),
   KEY `os_id` (`os_id`)
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `domain`;
 
@@ -111,7 +111,7 @@ CREATE TABLE `domain` (
   `numhosts` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `domain_index` (`domain`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `host`;
 
@@ -138,7 +138,7 @@ CREATE TABLE `host` (
   KEY `os_id` (`os_id`),
   KEY `dmn_id` (`dmn_id`),
   KEY `host` (`host`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `installed_pkgs`;
 
@@ -157,7 +157,7 @@ CREATE TABLE `installed_pkgs` (
   UNIQUE KEY `uniq_entry_no_arch` (`host_id`,`pkg_id`,`version`,`rel`),
   KEY `pkg_id` (`pkg_id`),
   KEY `host_id` (`host_id`,`pkg_id`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `installed_pkgs_cves`;
 
@@ -170,7 +170,7 @@ CREATE TABLE `installed_pkgs_cves` (
   KEY `host_id` (`host_id`),
   KEY `installed_pkg_id` (`installed_pkg_id`),
   KEY `cve_id` (`cve_id`)
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `os`;
 
@@ -181,7 +181,7 @@ CREATE TABLE `os` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `os` (`os`),
   KEY `os_index` (`os`(50))
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `os_group`;
 
@@ -191,7 +191,7 @@ CREATE TABLE `os_group` (
   `name` varchar(128) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `oses_group`;
 
@@ -200,7 +200,7 @@ CREATE TABLE `oses_group` (
   `os_group_id` int(10) unsigned NOT NULL,
   `os_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`os_group_id`,`os_id`)
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `pkg_exception_cve`;
 
@@ -209,7 +209,7 @@ CREATE TABLE `pkg_exception_cve` (
   `cve_id` int(10) unsigned NOT NULL,
   `exp_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`cve_id`,`exp_id`)
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `pkgs`;
 
@@ -219,7 +219,7 @@ CREATE TABLE `pkgs` (
   `name` char(150) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `pkgs_exceptions`;
 
@@ -237,7 +237,7 @@ CREATE TABLE `pkgs_exceptions` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq` (`pkg_id`,`version`,`rel`,`arch`,`cve_name`),
   KEY `pkg_id` (`pkg_id`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `repositories`;
 
@@ -255,7 +255,7 @@ CREATE TABLE `repositories` (
   `file_checksum` char(33) default NULL,
   `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `settings`;
 
@@ -267,7 +267,7 @@ CREATE TABLE `settings` (
   `value2` varchar(4096) default NULL,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(1000))
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `site`;
 
@@ -281,7 +281,7 @@ CREATE TABLE `site` (
   `numhosts` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `site_index` (`name`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `user_domain`;
 
@@ -291,7 +291,7 @@ CREATE TABLE `user_domain` (
   `domain_id` int(10) unsigned NOT NULL,
   `domain` varchar(150) default NULL,
   PRIMARY KEY  (`user_id`,`domain_id`)
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `user_site`;
 
@@ -300,7 +300,7 @@ CREATE TABLE `user_site` (
   `user_id` int(10) unsigned NOT NULL,
   `site_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`user_id`,`site_id`)
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `users`;
 
@@ -311,5 +311,5 @@ CREATE TABLE `users` (
   `dn` char(255) default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `dn` (`dn`)
-) ENGINE=MyISAM  DEFAULT;
+) ENGINE=MyISAM;
 
