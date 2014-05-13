@@ -54,7 +54,7 @@ function processCriterias(&$xpath, $criteriaElement, &$res, $os, $package) {
 		// Criterions can contain both os and package under one criteria
 		if ($os != null && !empty($package)) {
 #print "Storing $os, $package\n";
-			if ($res['redhat_releases'][$os] == null) {
+			if (!array_key_exists($os, $res['redhat_releases'])) {
 				$res['redhat_releases'][$os] = array();
 			}
 			array_push($res['redhat_releases'][$os], $package);
