@@ -640,7 +640,7 @@ for ($i = 0; $i <= $count_items; $i++) {
 			"',rel='".$items[3][$i]."',act_version_id='$act_version_id', exp_id='$exp_id'";
 		// Version 4 contains also arch of the package
 		if ($version == "4") $sql .= ",arch='" . $items[4][$i] . "'";
-		$sql .=	" ON DUPLICATE KEY UPDATE act_version_id='$act_version_id'";
+		$sql .=	" ON DUPLICATE KEY UPDATE act_version_id='$act_version_id', id=LAST_INSERT_ID(id)";
 		if (!mysql_query($sql)) { 
 		    $mysql_e = mysql_error();
 		    syslog(LOG_ERR, "DB: Unable to add host-package entry: $mysql_e ... $sql"); 
