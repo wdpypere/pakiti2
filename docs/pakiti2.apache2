@@ -10,13 +10,13 @@
 	ServerName pakiti.server.com:443
         ServerAdmin admin@admin.com	
 
-	DocumentRoot /var/lib/pakiti2/www/pakiti
+	DocumentRoot /var/www/pakiti2/www/pakiti
 	ErrorLog /var/log/apache2/pakiti-error
 	CustomLog /var/log/apache2/pakiti-access common
 	CustomLog /var/log/apache2/ssl_request_pakiti_log ssl_combined
 	
-	Alias /feed "/var/lib/pakiti2/www/feed"
-	<Directory "/var/lib/pakiti2/www/feed">
+	Alias /feed "/var/www/pakiti2/www/feed"
+	<Directory "/var/www/pakiti2/www/feed">
 		SSLRequireSSL
 		Options +FollowSymLinks
 		AllowOverride None
@@ -25,8 +25,8 @@
 		DirectoryIndex index.php
 	</Directory>
 
-	Alias /link "/var/lib/pakiti2/www/link"
-	<Directory "/var/lib/pakiti2/www/link">
+	Alias /link "/var/www/pakiti2/www/link"
+	<Directory "/var/www/pakiti2/www/link">
 		SSLRequireSSL
 		Options +FollowSymLinks
 		AllowOverride None
@@ -35,7 +35,7 @@
 		DirectoryIndex index.php
 	</Directory>
 
-	<Directory "/var/lib/pakiti2/www/pakiti">
+	<Directory "/var/www/pakiti2/www/pakiti">
 # Restrict access to this directory by your own auth mech
 		SSLRequireSSL
 		Options +FollowSymLinks
