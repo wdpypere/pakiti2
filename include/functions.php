@@ -409,6 +409,9 @@ function end_time($start_time) {
 }
 
 function get_logged_user() {
+	# Return fake user when authz is disabled
+	if ($enable_authz == 0) return "anonymous";
+
 	$user = array_key_exists('REMOTE_USER', $_SERVER) ? $_SERVER['REMOTE_USER'] : "";
 	if ($user == "") {
 		$user = array_key_exists('SSL_CLIENT_S_DN', $_SERVER) ? $_SERVER['SSL_CLIENT_S_DN'] : "";
@@ -476,6 +479,9 @@ function check_authz_site($site_id) {
 }
 
 function check_admin_authz() {
+	# Allow everyone to see admin pages when authz is disabled
+	if ($enable_authz == 0) return 1;
+
         global $admin_dns;
 	$user = get_logged_user();
 
