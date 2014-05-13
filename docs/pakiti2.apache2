@@ -11,9 +11,9 @@
         ServerAdmin admin@admin.com	
 
 	DocumentRoot /var/www/pakiti2/www/pakiti
-	ErrorLog /var/log/apache2/pakiti-error
-	CustomLog /var/log/apache2/pakiti-access common
-	CustomLog /var/log/apache2/ssl_request_pakiti_log ssl_combined
+	ErrorLog /var/log/httpd/pakiti-error
+	CustomLog /var/log/httpd/pakiti-access common
+	CustomLog /var/log/httpd/ssl_request_pakiti_log ssl_combined
 	
 	Alias /feed "/var/www/pakiti2/www/feed"
 	<Directory "/var/www/pakiti2/www/feed">
