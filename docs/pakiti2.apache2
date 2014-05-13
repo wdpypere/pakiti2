@@ -42,7 +42,7 @@
 		AllowOverride None
 		Order allow,deny
 		Allow from all
-		DirectoryIndex index.php
+		DirectoryIndex sites.php
 	</Directory>
 
 </VirtualHost>
