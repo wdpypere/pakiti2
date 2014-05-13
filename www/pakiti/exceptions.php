@@ -109,7 +109,7 @@ $title = "Pakiti CVEs Exceptions";
 ?>
 <html>
 <head>
-	<title><? print $title; ?></title>
+	<title><?php print $title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="stylesheet" href="pakiti.css" media="all" type="text/css" />
 	<link rel="shortcut icon" type="image/ico" href="favicon.ico"> 

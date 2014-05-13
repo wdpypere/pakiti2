@@ -60,7 +60,7 @@ $title = "Pakiti CVEs by tags results";
 ?>
 <html>
 <head>
-	<title><? print $title; ?></title>
+	<title><?php print $title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="stylesheet" href="pakiti.css" media="all" type="text/css" />
 	<link rel="shortcut icon" type="image/ico" href="favicon.ico"> 
@@ -361,7 +361,7 @@ while ($row = mysql_fetch_row($sqlres)) {
 		OS	
 	</td>
 	<td>
-		CVE (<? (!empty($cve)) ? print "1" : print sizeof($affected_cves); ?>)	
+		CVE (<?php (!empty($cve)) ? print "1" : print sizeof($affected_cves); ?>)	
 	</td>
 	<td>
 		Last report

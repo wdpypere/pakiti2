@@ -121,7 +121,7 @@
         </td>
 	<td>Select tag:
        	  <select name="tag" onchange="gform.submit();">
-          <option taga="all" <? if ($tag == "all") print " selected"; ?>>all</option>
+          <option taga="all" <?php if ($tag == "all") print " selected"; ?>>all</option>
 <?php
         # Print all admins
         $sql = "SELECT DISTINCT admin FROM host";
@@ -174,7 +174,7 @@
 
 	$num_of_sites = mysql_num_rows($sites);
 ?>
-<h3>Showing <?= $num_of_sites ?> sites for <? echo $titlestring ?></h3>
+<h3>Showing <?= $num_of_sites ?> sites for <?php echo $titlestring ?></h3>
 
 <!-- Display Output -->
 <table width="100%" border="0" class="tg">
