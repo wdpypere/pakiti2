@@ -3,8 +3,8 @@
 	SSLEngine on
 	SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP
 	
-	SSLCertificateKeyFile "/etc/grid-security/hostkey.pem"
-	SSLCertificateFile "/etc/grid-security/hostcert.pem" 
+	SSLCertificateKeyFile "/etc/pki/tls/private/localhost.key"
+        SSLCertificateFile "/etc/pki/tls/certs/localhost.crt"
 	SSLCACertificatePath "/etc/grid-security/certificates/"
 
 	ServerName pakiti.server.com:443
