@@ -27,6 +27,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE. 
 
+global $enable_authz;
+
 # Compare packages version based on type of packages
 # deb - compare version first, it they are equal then compare releases  
 # rpm - compre version and release together
