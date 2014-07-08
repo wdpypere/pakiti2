@@ -234,7 +234,7 @@
 			$num_up_sec_pkgs_site +=$item_act[0];
 			if ($num_up_sec_pkgs > $worst_site_sec) $worst_site_sec = $num_up_sec_pkgs;
 
-			$sql = "SELECT count(DISTINCT cve.cve_name) FROM cve, installed_pkgs_cves WHERE installed_pkgs_cves.host_id=$host_id AND installed_pkgs_cves.cve_id=cve.cves_id";
+			$sql = "SELECT count(DISTINCT installed_pkgs_cves.cve_id) FROM installed_pkgs_cves WHERE installed_pkgs_cves.host_id=$host_id";
 
 	                if (!$res = mysql_query($sql)) {
         	                print "Error: " . mysql_error($link);
