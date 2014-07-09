@@ -48,6 +48,7 @@
     $stats_nb_unpatched = array();
     $stats_nb_dead = array();
     $admin_list = array();
+    $site_last_report_time = 0;
 
     $version = array() ;
     $currentadmins = array();
@@ -287,7 +288,7 @@
      
 	$sql = "SELECT 
 			os.os, host.host, host.kernel, 
-			UNIX_TIMESTAMP(time), TO_DAYS(NOW())-TO_DAYS(host.time), 
+			UNIX_TIMESTAMP(host.time), TO_DAYS(NOW())-TO_DAYS(host.time), 
 			host.admin, host.conn, host.id, 
 			host.report_host, host.report_ip, host.dmn_id, substr(domain.domain,-2) as tld, host.site_id
 	 	FROM host, os, domain, site 
@@ -333,6 +334,7 @@
 		$os = $row[0];
 		$admin = $row[5];
 		$ia = 0;
+		if ($site_last_report_time < $row[3]) $site_last_report_time = $row[3];
 
 		if (!in_array($admin, $admin_list)) {
 			array_push($admin_list, $admin);
@@ -544,7 +546,7 @@ foreach($admin_list as $admin) {
 
 	print "<td>$stats_worse_case[$admin]</td>";
 	print "<td><font color=\"#666666\">$stats_nb_dead[$admin]</font></td>";
-	print "<td>".date("j F Y H:i")."</td>";
+	print "<td>".date("j F Y H:i", $site_last_report_time)."</td>";
 	print "</tr>";
 }
 print '</table>';
