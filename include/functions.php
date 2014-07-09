@@ -27,7 +27,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE. 
 
-global $enable_authz;
 
 # Compare packages version based on type of packages
 # deb - compare version first, it they are equal then compare releases  
@@ -412,6 +411,7 @@ function end_time($start_time) {
 
 function get_logged_user() {
 	# Return fake user when authz is disabled
+	global $enable_authz;
 	if ($enable_authz == 0) return "anonymous";
 
 	$user = array_key_exists('REMOTE_USER', $_SERVER) ? $_SERVER['REMOTE_USER'] : "";
@@ -422,7 +422,7 @@ function get_logged_user() {
 }
 
 function check_authz_all() {
-       global $admin_dns;
+        global $admin_dns;
         $user = get_logged_user();
 
         if ($user == "") {
@@ -482,6 +482,7 @@ function check_authz_site($site_id) {
 
 function check_admin_authz() {
 	# Allow everyone to see admin pages when authz is disabled
+	global $enable_authz;
 	if ($enable_authz == 0) return 1;
 
         global $admin_dns;
