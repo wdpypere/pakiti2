@@ -287,7 +287,7 @@
      
 	$sql = "SELECT 
 			os.os, host.host, host.kernel, 
-			UNIX_TIMESTAMP(time), TO_DAYS(NOW())-TO_DAYS(host.time), 
+			UNIX_TIMESTAMP(host.time), TO_DAYS(NOW())-TO_DAYS(host.time), 
 			host.admin, host.conn, host.id, 
 			host.report_host, host.report_ip, host.dmn_id, substr(domain.domain,-2) as tld, host.site_id
 	 	FROM host, os, domain, site 
