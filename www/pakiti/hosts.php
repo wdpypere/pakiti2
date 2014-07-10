@@ -49,6 +49,7 @@
     $stats_nb_dead = array();
     $admin_list = array();
     $site_last_report_time = 0;
+    $alladmins = "";
 
     $version = array() ;
     $currentadmins = array();
@@ -431,6 +432,7 @@
 
 		if (!$skip) {
 			# Setting up the right tag section
+			$currentadmin = "";
 			if (($o == 'tag') && !in_array($admin, $currentadmins)) {
 				array_push($currentadmins, $admin);
 				$currentadmin = $admin;
