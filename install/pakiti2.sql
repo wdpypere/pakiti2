@@ -154,7 +154,6 @@ CREATE TABLE `installed_pkgs` (
   `exp_id` int(10) unsigned default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_entry` (`host_id`,`pkg_id`,`version`,`rel`,`arch`),
-  UNIQUE KEY `uniq_entry_no_arch` (`host_id`,`pkg_id`,`version`,`rel`),
   KEY `pkg_id` (`pkg_id`),
   KEY `host_id` (`host_id`,`pkg_id`)
 ) ENGINE=MyISAM;
