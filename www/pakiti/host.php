@@ -292,7 +292,7 @@ if (mysql_num_rows($res)) {
 				pkgs.name, installed_pkgs.version, pkgs.id,
 				installed_pkgs.rel, act_version.act_version,
 				act_version.is_sec, act_version.act_rel,
-				installed_pkgs.id
+				installed_pkgs.id, installed_pkgs.arch
 			FROM pkgs, ";
 
 		switch ($view) {
@@ -360,6 +360,7 @@ if (mysql_num_rows($res)) {
 				$pkg_act_rel = $row2[6];
 				$pkg_is_sec  = $row2[5];
 				$pkg_installed_id = $row2[7];
+				$pkg_arch = $row2[8];
 				$pkg_cves    = array();
 				$pkg_cves_severity = array();
 					
@@ -398,6 +399,9 @@ if (mysql_num_rows($res)) {
 				        print "<td>$pkg_ver";
 					if ($pkg_rel)
 						print "/$pkg_rel";
+					# Print package architecture if different from the host architecture
+                                        if ($pkg_arch != $arch)
+                                                print " <i>($pkg_arch)</i>";
 					print"</td>\n";
 					print "<td><span style=\"color:";
 					if (($pkg_ver != $pkg_act_ver) || (($pkg_rel != "") && ($pkg_rel != $pkg_act_rel))) {
