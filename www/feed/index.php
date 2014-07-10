@@ -67,8 +67,6 @@ else if (isset($_POST["rpms"]))
 	$pkgs = htmlspecialchars($_POST["rpms"]);
 else $pkgs = "unknown";
 
-#syslog(LOG_ERR, $pkgs);
-
 if (isset($_POST["v"]))
 	$version = mysql_real_escape_string(trim(htmlspecialchars($_POST["v"])));
 else if (isset($_POST["version"]))
@@ -504,13 +502,20 @@ $count_items = count($items[1]);
 
 for ($i = 0; $i <= $count_items; $i++) {
 	$act_version_id = NULL;
+	# Data from report
+	$r_pkg_name = mysql_real_escape_string($items[1][$i]);
+	$r_pkg_version = mysql_real_escape_string($items[2][$i]);
+	$r_pkg_rel = mysql_real_escape_string($items[3][$i]);
+	$r_pkg_arch = mysql_real_escape_string($items[4][$i]);
+	# If pakiti client doesn't report arch for packages, set the arch to N/A.
+	if (empty($r_pkg_arch)) $r_pkg_arch = "N/A";
 
 	if ($i == $count_items) {
 		if ($we_have_kernel === false) {
 			# we have last package, check if we have some package represents kernel, if not then create fake one
 			$kernel_raw_version = explode("-", trim($kernel), 2);
-			$items[1][$i] = "kernel";
-			$items[2][$i] = "0:" . $kernel_raw_version[0];
+			$r_pkg_name = "kernel";
+			$r_pkg_version = "0:" . $kernel_raw_version[0];
 			$kernel_release = $kernel_raw_version[1];
 			# If release containst also arch, strip it
 			$arch_to_be_removed = ".$arch";
@@ -518,16 +523,16 @@ for ($i = 0; $i <= $count_items; $i++) {
 			if (substr($kernel_raw_version[1], -$arch_len, $arch_len) == $arch_to_be_removed) {
 				$kernel_release = substr($kernel_raw_version[1], 0, strlen($kernel_raw_version[1])-$arch_len); 	
 			}
-			$items[3][$i] = $kernel_release;
-			$items[4][$i] = $arch;
-			syslog(LOG_INFO, "Adding fake kernel $kernel ($arch) in version " . $items[2][$i] . "/". $items[3][$i]  . " for host $host");
+			$r_pkg_rel = $kernel_release;
+			$r_pkg_arch = $arch;
+			syslog(LOG_INFO, "Adding fake kernel $kernel ($arch) in version $r_pkg_version/$r_pkg_rel for host $host");
 		} else {
 			break;
 		}
 	} else {
 		/* If host reporting kernel package which is not active, skip it */
-		if (is_kernel_pkg($items[1][$i])) {
-			if (is_unused_kernel_pkg($kernel, $items[1][$i], $items[2][$i], $items[3][$i]) === true) {
+		if (is_kernel_pkg($r_pkg_name)) {
+			if (is_unused_kernel_pkg($kernel, $r_pkg_name, $r_pkg_version, $r_pkg_rel) === true) {
 				continue;
 			} else {
 				$we_have_kernel = true;
@@ -537,19 +542,19 @@ for ($i = 0; $i <= $count_items; $i++) {
 
 
 	/* Do not store devel packages (package name has '-devel' at the end of the name) */
-	if (!$store_devel_packages && substr($items[1][$i], -6, 6) == "-devel") continue;
+	if (!$store_devel_packages && substr($r_pkg_name, -6, 6) == "-devel") continue;
 	
 	/* Do not store doc packages (package name has '-doc' at the end of the name) */
-	if (!$store_doc_packages && substr($items[1][$i], -4, 4) == "-doc") continue;
+	if (!$store_doc_packages && substr($r_pkg_name, -4, 4) == "-doc") continue;
 
 	/* Ignore packages set in $ignore_package_list variable */
-	if (in_array($items[1][$i], $ignore_package_list) === true) {
+	if (in_array($r_pkg_name, $ignore_package_list) === true) {
 		continue;
 	}
 
 	# If asynchronous mode is on, only store the reported packages
 	if ($asynchronous_mode == 1) {
-		$sql = "SELECT id FROM pkgs WHERE name='" . $items[1][$i] . "'";
+		$sql = "SELECT id FROM pkgs WHERE name='$r_pkg_name'";
 
 	        $result = mysql_query($sql);
 	        if (!$result) {
@@ -559,16 +564,14 @@ for ($i = 0; $i <= $count_items; $i++) {
 			$pkg_id = mysql_fetch_row($result);
 			$pkg_id = $pkg_id[0];
 
-			$sql = "INSERT INTO installed_pkgs SET host_id=$host_id,pkg_id=$pkg_id,version='".$items[2][$i].
-				"',rel='".$items[3][$i]."',act_version_id='',exp_id=''";
-		        // Version 4 contains also arch of the package
-		        if ($version == "4") $sql .= ",arch='" . $items[4][$i] . "'";
+			$sql = "INSERT INTO installed_pkgs SET host_id=$host_id,pkg_id=$pkg_id,version='$r_pkg_version'," .
+			       "rel='$r_pkg_rel',act_version_id='',exp_id='',arch='$r_pkg_arch'";
         		if (!mysql_query($sql)) {
 		        	$mysql_e = mysql_error();
 				syslog(LOG_ERR, "DB: Unable to add host-package entry: $mysql_e ... $sql");
 			}
 		} else {
-	                $sql = "INSERT INTO pkgs SET name='".$items[1][$i]."'";
+	                $sql = "INSERT INTO pkgs SET name='$r_pkg_name'";
         	        if (!mysql_query($sql)) {
                 	        syslog(LOG_ERR, "DB: Unable to add package: ".mysql_error($link));
                         	closelog();
@@ -576,7 +579,8 @@ for ($i = 0; $i <= $count_items; $i++) {
         	        }
 		}
 	} else {
-		$sql = "SELECT act_version, act_version.id, is_sec, act_rel, pkgs.id FROM pkgs, act_version WHERE pkgs.name='" . $items[1][$i] . "' and pkg_id=pkgs.id AND os_group_id=$os_group_id AND arch_id=$arch_id";
+		$sql = "SELECT act_version, act_version.id, is_sec, act_rel, pkgs.id FROM pkgs, act_version WHERE pkgs.name='$r_pkg_name' " .
+		       "AND pkg_id=pkgs.id AND os_group_id=$os_group_id AND arch_id=$arch_id";
 		$result = mysql_query($sql);
 		if (!$result) {
 			syslog(LOG_ERR, "DB: Unable to fetch package id:".mysql_error($link));
@@ -586,7 +590,7 @@ for ($i = 0; $i <= $count_items; $i++) {
 			$act = mysql_fetch_row($result);
 			$pkg_id = $act[4];
 		
-			$cmp_ret = vercmp($os_type, $items[2][$i], $items[3][$i],  $act[0], $act[3]);
+			$cmp_ret = vercmp($os_type, $r_pkg_version, $r_pkg_rel,  $act[0], $act[3]);
 
 			// Check if there is different version/release of installed package and actual version of package
 			if ($cmp_ret < 0) {
@@ -602,10 +606,10 @@ for ($i = 0; $i <= $count_items; $i++) {
 
 		}
 		else {
-			$sql = "INSERT INTO pkgs SET name='".$items[1][$i]."'";
+			$sql = "INSERT INTO pkgs SET name='$r_pkg_name'";
 			if (!mysql_query($sql)) {
 				# Entry probably exists
-				$sql = "SELECT id FROM pkgs WHERE name='" . $items[1][$i] . "'";
+				$sql = "SELECT id FROM pkgs WHERE name='$r_pkg_name'";
 				$result = mysql_query($sql);
 		                if (!$result) {
 		                        syslog(LOG_ERR, "DB: Unable to fetch package id:".mysql_error($link));
@@ -636,11 +640,9 @@ for ($i = 0; $i <= $count_items; $i++) {
 #			$exp_id = $exp_row[0];
 #		}
 
-		$sql = "INSERT INTO installed_pkgs SET host_id=$host_id, pkg_id=$pkg_id, version='".$items[2][$i].
-			"',rel='".$items[3][$i]."',act_version_id='$act_version_id', exp_id='$exp_id'";
-		// Version 4 contains also arch of the package
-		if ($version == "4") $sql .= ",arch='" . $items[4][$i] . "'";
-		$sql .=	" ON DUPLICATE KEY UPDATE act_version_id='$act_version_id', id=LAST_INSERT_ID(id)";
+		$sql = "INSERT INTO installed_pkgs SET host_id=$host_id, pkg_id=$pkg_id, version='$r_pkg_version',rel='$r_pkg_rel',act_version_id='$act_version_id'," .
+		       "exp_id='$exp_id',arch='$r_pkg_arch' ON DUPLICATE KEY UPDATE act_version_id='$act_version_id', id=LAST_INSERT_ID(id)";
+
 		if (!mysql_query($sql)) { 
 		    $mysql_e = mysql_error();
 		    syslog(LOG_ERR, "DB: Unable to add host-package entry: $mysql_e ... $sql"); 
@@ -650,23 +652,21 @@ for ($i = 0; $i <= $count_items; $i++) {
 		# Send package name if there is a new version
 		if ($report == 1) {
 			if ($act_version_id != NULL) {
-				print $items[1][$i] ." ".$act[0];
+				print "$r_pkg_name ".$act[0];
 				if (!empty($act[3])) print "-".$act[3];
 				if ($act_version_is_sec == 1) {
 					print " SEC ";
 				} else print " ORD ";
-				print $items[2][$i];
-				if (!empty($items[3][$i])) print "-".$items[3][$i];
+				print $r_pkg_version;
+				if (!empty($r_pkg_rel)) print "-".$r_pkg_rel;
 				print "\n";
 			}
 		}
 
 		# Compare against CVEs
 		# Get pkg version from CVEs
-		$sql = "SELECT cves.id, cves.version, cves.rel " .
-			"FROM cves, cves_os, host " .
-			"WHERE cves.pkg_id=$pkg_id AND host.id=$host_id AND cves.cves_os_id=cves_os.id " .
-				"AND cves_os.os_id=host.os_id AND strcmp(concat(cves.version,cves.rel), '" . $items[2][$i] . $items[3][$i] . "') != 0";
+		$sql = "SELECT cves.id, cves.version, cves.rel FROM cves, cves_os, host WHERE cves.pkg_id=$pkg_id AND host.id=$host_id AND cves.cves_os_id=cves_os.id " .
+		       "AND cves_os.os_id=host.os_id AND strcmp(concat(cves.version,cves.rel), '$r_pkg_version$r_pkg_rel') != 0";
 
 		if (!$cve_result = mysql_query($sql)) {
 		       $mysql_e = mysql_error();
@@ -675,7 +675,7 @@ for ($i = 0; $i <= $count_items; $i++) {
 		}
 		$cves_to_insert = array();
 		while ($cve_item = mysql_fetch_row($cve_result)) {
-			$cmp_ret = vercmp($os_type, $items[2][$i], $items[3][$i], $cve_item[1], $cve_item[2]);
+			$cmp_ret = vercmp($os_type, $r_pkg_version, $r_pkg_rel, $cve_item[1], $cve_item[2]);
 			if ($cmp_ret < 0) {
 				array_push($cves_to_insert, $cve_item[0]);
 				$num_of_cves += 1;
@@ -684,7 +684,9 @@ for ($i = 0; $i <= $count_items; $i++) {
 		$cves_to_insert_sql = "";
 		foreach($cves_to_insert as $cve_id) {
 			// Is there an exception?
-			$exp_sql = "SELECT 1 FROM pkg_exception_cve, pkgs_exceptions WHERE pkg_exception_cve.cve_id=$cve_id AND pkg_exception_cve.exp_id=pkgs_exceptions.id AND pkgs_exceptions.pkg_id=$pkg_id AND pkgs_exceptions.version='" . $items[2][$i] . "' AND pkgs_exceptions.rel='" . $items[3][$i] . "' AND pkgs_exceptions.arch='" . $items[4][$i] . "'";
+			$exp_sql = "SELECT 1 FROM pkg_exception_cve, pkgs_exceptions WHERE pkg_exception_cve.cve_id=$cve_id " .
+				   "AND pkg_exception_cve.exp_id=pkgs_exceptions.id AND pkgs_exceptions.pkg_id=$pkg_id " .
+				   "AND pkgs_exceptions.version='$r_pkg_version' AND pkgs_exceptions.rel='$r_pkg_rel' AND pkgs_exceptions.arch='$r_pkg_arch'";
 			if (!$res_exp = mysql_query($exp_sql)) {
 				$mysql_e = mysql_error();
 				syslog(LOG_ERR, "DB: Unable to get exception: $mysql_e ... $sql");
