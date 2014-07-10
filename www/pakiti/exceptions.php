@@ -179,7 +179,7 @@ if (!empty($err)) print $err;
 		$pkg_modifier = $row[6];
 		$pkg_timestamp = $row[7];
 	
-		print "<td>$pkg_name $pkg_ver/$pkg_rel ($pkg_arch)</td>\n";
+		print "<td>$pkg_name $pkg_ver/$pkg_rel <i>($pkg_arch)</i></td>\n";
 		print "<td>$pkg_reason</td>";
 		print "<td>$pkg_modifier</td>\n";
 		print "<td>$pkg_timestamp</td>\n";
@@ -222,7 +222,7 @@ if (!empty($err)) print $err;
         	}
 		if (mysql_num_rows($res2) == 0) {
 			print "<tr>\n<td><input name=\"exception$i\" id=\"exception$i\" value=\"$pkg_id $pkg_ver $pkg_rel $pkg_arch\" type=\"checkbox\" onClick=\"document.getElementById('modified$i').value = 1;\"></td>\n";
-			print "<td>$pkg_name $pkg_ver/$pkg_rel ($pkg_arch)</td>\n";
+			print "<td>$pkg_name $pkg_ver/$pkg_rel <i>($pkg_arch)</i></td>\n";
 			print "<td id=\"reason$i\"><input type=\"text\" size=50 name=\"reason$i\" onKeyUp=\"document.getElementById('exception$i').checked = true\"
 				onClick=\"document.getElementById('modified$i').value = 1;\">
 				<input type=\"hidden\" name=\"modified$i\" id=\"modified$i\" value=0>
