@@ -209,46 +209,28 @@
 		$num_up_sec_pkgs_site = 0;
 		$skip = 1;
 
-		# Get hosts belonging to this site
-		$sql = "SELECT id, arch_id, os_id, admin FROM host WHERE site_id='$siteid'";
-		if(!$hosts = mysql_query($sql)) {
+		# Get worst and average number of CVEs which has some client for the site
+		$sql = "select count(distinct cve.cve_name) from installed_pkgs_cves, host, cve where installed_pkgs_cves.host_id=host.id and host.site_id=$siteid and installed_pkgs_cves.cve_id=cve.cves_id group by host.id";
+		if (!$res = mysql_query($sql)) {
                         print "Error: " . mysql_error($link);
                         exit;
                 }
-
-                while ($host_row = mysql_fetch_row($hosts)) {
-			$host_id = $host_row[0];
-	               # Print num of all sec updates and all non-updated packages
-
-        	        $sql_act = "SELECT count(installed_pkgs.act_version_id)
-                        FROM installed_pkgs, act_version
-                        WHERE act_version_id>0 AND host_id='$host_id' AND installed_pkgs.act_version_id=act_version.id AND 
-			act_version.is_sec=1";
-
-	                if (!$row_act = mysql_query($sql_act)) {
-        	                $num_up_sec_pkgs="N/A";
-              		}
-                   	
-			$item_act = mysql_fetch_row($row_act);
-       	                $num_up_sec_pkgs = $item_act[0];
-			$num_up_sec_pkgs_site +=$item_act[0];
-			if ($num_up_sec_pkgs > $worst_site_sec) $worst_site_sec = $num_up_sec_pkgs;
-
-			$sql = "SELECT count(DISTINCT installed_pkgs_cves.cve_id) FROM installed_pkgs_cves WHERE installed_pkgs_cves.host_id=$host_id";
-
-	                if (!$res = mysql_query($sql)) {
-        	                print "Error: " . mysql_error($link);
-                	        exit;
-               		}
-
-			$cve_row = mysql_fetch_row($res);
-			$num_cves = $cve_row[0];
-			$num_cves_site += $cve_row[0];
-			$num_cves_host = $num_cves;
-
-			if ($num_cves_host > $worst_site_cves) $worst_site_cves = $num_cves_host;
-
+		while ($row_site = mysql_fetch_row($res)) {
+			$num_cves_site +=$row_site[0];
+			if ($row_site[0] > $worst_site_cves) $worst_site_cves = $row_site[0];
 		}
+
+		# Get worst and average number of sec packages which has some client for the site
+		$sql = "select count(installed_pkgs.act_version_id) FROM installed_pkgs, act_version, host WHERE act_version_id>0 AND installed_pkgs.host_id=host.id and host.site_id=$siteid and installed_pkgs.act_version_id=act_version.id AND act_version.is_sec=1 group by host.id";
+		if (!$res = mysql_query($sql)) {
+                        print "Error: " . mysql_error($link);
+                        exit;
+                }
+		while ($row_site = mysql_fetch_row($res)) {
+			$num_up_sec_pkgs_site +=$row_site[0];
+			if ($row_site[0] > $worst_site_sec) $worst_site_sec = $row_site[0];
+		}
+
 		// Alternate background colors of rows
                 if ($bg_color_alt == 1) {
 	                $bg_color = 'class="bg1"';
