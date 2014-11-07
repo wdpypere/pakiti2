@@ -29,7 +29,7 @@
 # POSSIBILITY OF SUCH DAMAGE. 
 
 #include_once("../config/config.php");
-$config = '/etc/pakiti2/pakiti-server-egi.conf';
+$config = '/etc/pakiti2/pakiti2-server-egi.conf';
 #include_once("../include/functions.php");
 include_once("../include/mysql_connect.php");
 
@@ -70,7 +70,7 @@ while ($row = mysql_fetch_row($res)) {
         $roc = $row[3];
 
         if ($current_tag != $cve_tag) {
-                $msg .= "$cve_tag ($entries)\n";
+                $msg_body .= "$cve_tag ($entries)\n";
                 $current_tag = $cve_tag;
         }
         $msg_body .= "  $roc  $site (last check: $date)\n        https://pakiti.egi.eu/tags_sites.php?tag=$cve_tag&site=$site\n";
@@ -107,4 +107,3 @@ if ($count > 0) {
         mail('irtf@mailman.egi.eu',$subject,$msg, $headers);
 }
 ?>
-

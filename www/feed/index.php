@@ -36,7 +36,6 @@ $starttime = start_time();
 ###########################################
 # Open syslog
 
-define_syslog_variables();
 openlog("[PAKITI]", LOG_PID, LOG_LOCAL0);
 
 ###########################################

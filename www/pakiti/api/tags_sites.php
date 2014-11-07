@@ -27,7 +27,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE. 
 
-
 include_once("../../../config/config.php");
 include_once("../../../include/mysql_connect.php");
 include_once("../../../include/functions.php");
@@ -108,11 +107,26 @@ while ($row = mysql_fetch_row($sqlres)) {
 	$res[$hosts]["cve_title"] = $row[10];
 	$hosts++;
 
-	${"sites_$row[6]"}[$row[2]]++;
-	${"countries_$row[6]"}[$row[3]]++;
-	if (!defined(${"cve_$row[4]"}[$row[2]])) ${"cve_$row[4]"}[$row[2]] = 0;
-	${"cve_$row[4]"}[$row[2]]++;
-	${"sc_$row[2]"} = $row[8];
+	if (!isset(${"sites_$row[6]"}[$row[2]])) {
+		${"sites_$row[6]"}[$row[2]] = 0;
+	} else {
+		${"sites_$row[6]"}[$row[2]]++;
+	}
+	if (!isset(${"countries_$row[6]"}[$row[3]])) {
+		${"countries_$row[6]"}[$row[3]] = 0;
+	} else {
+		${"countries_$row[6]"}[$row[3]]++;
+	}
+	if (!isset(${"cve_$row[4]"}[$row[2]])) {
+		${"cve_$row[4]"}[$row[2]] = 0;
+	} else {
+		${"cve_$row[4]"}[$row[2]]++;
+	}
+	if (!isset(${"sc_$row[2]"})) {
+		${"sc_$row[2]"} = 0;
+	} else {
+		${"sc_$row[2]"} = $row[8];
+	}
 }
 
 switch ($type) {

@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-$config = '/etc/pakiti2/pakiti-server-egi.conf';
+$config = '/etc/pakiti2/pakiti2-server-egi.conf';
 include("../include/mysql_connect.php");
 
 # Backup the whole database
