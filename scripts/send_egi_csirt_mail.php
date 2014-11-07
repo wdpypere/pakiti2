@@ -29,7 +29,7 @@
 # POSSIBILITY OF SUCH DAMAGE. 
 
 #include_once("../config/config.php");
-$config = '/etc/pakiti/pakiti-server-egi.conf';
+$config = '/etc/pakiti2/pakiti-server-egi.conf';
 #include_once("../include/functions.php");
 include_once("../include/mysql_connect.php");
 

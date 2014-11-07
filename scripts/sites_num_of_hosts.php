@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-$config = '/etc/pakiti/pakiti-server-egi.conf';
+$config = '/etc/pakiti2/pakiti-server-egi.conf';
 include_once("../include/mysql_connect.php");
 
 $sql = "select site_id, count(id) from host group by site_id";
