@@ -12,5 +12,5 @@ wget -q -O /tmp/pakiti-ngi-so.xml --no-check-certificate --certificate=/etc/apac
 # Get list of sites
 wget -q -O /tmp/pakiti-sites.xml --no-check-certificate --certificate=/etc/apache2/ssl/pakiti.egi.eu.pem --private-key=/etc/apache2/ssl/pakiti.egi.eu.key "https://goc.egi.eu/gocdbpi/private/?method=get_site_list&certification_status=Certified&production_status=Production"
 
-cd /var/www/pakiti/scripts && /usr/bin/php site_admins.php 2>/dev/null
+cd /var/www/pakiti-egi/scripts && /usr/bin/php site_admins.php 2>/dev/null
 
