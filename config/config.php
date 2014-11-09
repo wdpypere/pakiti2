@@ -1,6 +1,6 @@
 <?php
 # Default Config file.
-$config = '/etc/pakiti2/pakiti2-server.conf';
+$config = '/etc/pakiti2/pakiti2-server-egi.conf';
 
 # Default view in host detail:
 # installed - show all installed packages
@@ -56,12 +56,13 @@ $ext_pages_outdated = 0;
 $asynchronous_mode = 0;
 
 # Enable authorization, off by default
-$enable_authz = 0;
+$enable_authz = 1;
 
 # DNs of the users, who can setup authz
 # Example $admin_dns = array ( "/DC=cz/DC=cesnet-ca/O=Masaryk University/CN=xxx1", "/DC=cz/DC=cesnet-ca/O=Masaryk University/CN=xxx2" );
 #$admin_dns = array (
 # );
+include_once(realpath(dirname(__FILE__)) . '/admins_acl.php');
 
 # Array of the trusted proxy clients, that can send results on behalf of other pakiti clients
 # Example $trusted_proxy_clients = array ( "proxy1.ics.muni.cz", "proxy2.ics.muni.cz" );

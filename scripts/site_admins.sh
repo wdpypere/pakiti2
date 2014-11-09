@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get list of site security officers
-wget -q -O /tmp/pakiti-seo.xml --no-check-certificate --certificate=/etc/apache2/ssl/pakiti.egi.eu.pem --private-key=/etc/apache2/ssl/pakiti.egi.eu.key "https://goc.egi.eu/gocdbpi/private/?method=get_site_contacts&roletype=Site%20Security%20Officer"
+wget -q -O /tmp/pakiti-seo.xml --no-check-certificate --certificate=/etc/apache2/ssl/2014/pakiti.egi.eu-2014.pem --private-key=/etc/apache2/ssl/2014/pakiti.egi.eu-2014.key "https://goc.egi.eu/gocdbpi/private/?method=get_site_contacts&roletype=Site%20Security%20Officer"
 
 # Get site security info, it CSIRT email
 wget -q -O /tmp/pakiti-csirt.xml --no-check-certificate --certificate=/etc/apache2/ssl/pakiti.egi.eu.pem --private-key=/etc/apache2/ssl/pakiti.egi.eu.key "https://goc.egi.eu/gocdbpi/private/?method=get_site_security_info"
