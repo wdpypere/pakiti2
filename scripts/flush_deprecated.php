@@ -3,8 +3,10 @@
 $config = '/etc/pakiti2/pakiti2-server-egi.conf';
 include("../include/mysql_connect.php");
 
+$dest_dir = "/data/pakiti-egi/";
+
 # Backup the whole database
-system('export PAKITISQL=pakiti-`date +%d.%m.%y`.sql; cd /var/tmp/pakiti-backup-egi; mysqldump --compact -h ' . $dbhost . ' -u ' . $user . ' -p"' . $password . '" ' . $dbname . ' > $PAKITISQL; bzip2 $PAKITISQL');
+system('export PAKITISQL=pakiti-`date +%d.%m.%y`.sql; cd ' . $dest_dir . '; mysqldump --compact -h ' . $dbhost . ' -u ' . $user . ' -p"' . $password . '" ' . $dbname . ' > $PAKITISQL; bzip2 $PAKITISQL');
 
 # Update statistics
 # Select hosts which reported more then 2 days ago
