@@ -69,5 +69,5 @@ include_once(realpath(dirname(__FILE__)) . '/admins_acl.php');
 $trusted_proxy_clients = array ( );
 
 # Set of tags which can be used to tag the CVEs (e.g. critical)
-$cve_tags = array( "Critical", "High" );
+$cve_tags = array( "EGI-Critical", "EGI-High" );
 ?>
