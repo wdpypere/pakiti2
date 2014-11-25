@@ -502,6 +502,10 @@ $count_items = count($items[1]);
 for ($i = 0; $i <= $count_items; $i++) {
 	$act_version_id = NULL;
 	# Data from report
+	if (empty($items[1][$i])) {
+	# Skip empty entries
+		continue;
+	}
 	$r_pkg_name = mysql_real_escape_string($items[1][$i]);
 	$r_pkg_version = mysql_real_escape_string($items[2][$i]);
 	$r_pkg_rel = mysql_real_escape_string($items[3][$i]);
