@@ -11,6 +11,69 @@ $verbose = 0;
 
 if (isset($argv[1]) && $argv[1] == "-v") $verbose = 1;
 
+# Process each criteria, this function must be duplicated because PHP removed call by reference. processCriteriasWithReference requires os and package to be passed as a reference
+function processCriteriasWithReference(&$xpath, $criteriaElement, &$res, &$os, &$package) {
+	$operator = $criteriaElement->attributes->item(0)->value;
+
+	// If we have $os and $package filled, store id
+	if ($os != null && !empty($package)) {
+#print "Storing $os, $package\n";
+		if ($res['redhat_releases'][$os] == null) {
+			$res['redhat_releases'][$os] = array();
+		}
+		array_push($res['redhat_releases'][$os], $package);
+		// Empty package varialble
+		$package = null;
+	}
+
+	// Check if the child nodes are criterion or criteria
+	$criterias_query = 'def:criteria';
+	$criterions_query = 'def:criterion';
+
+	$criterias = $xpath->query($criterias_query, $criteriaElement);
+	$criterions = $xpath->query($criterions_query, $criteriaElement);
+
+	if ($criterions->length > 0) {
+		// We have found criterions, so parse them. Try to find redhat version and packages names/versions
+		foreach ($criterions as $criterion) {
+			$comment = $criterion->attributes->item(1)->value;
+			if (strpos($comment, "is installed")) {
+				preg_match("/^Red Hat Enterprise Linux.* (\d+)[ ]*(Client|Server|Workstation|ComputeNode|)[ ]*is installed$/", $comment, $redhat_release);
+				$os = $redhat_release[1];
+#print "Got OS: $os\n";
+			} elseif (strpos($comment, "is earlier than")) {
+				preg_match("/^([^ ]+) is earlier than ([^-]*)-(.*)$/", $comment, $results);
+				$package = array();
+				$package['name'] = $results[1];
+				$package['version'] = $results[2];
+				$package['release'] = $results[3];
+#print "Got package: {$package['name']} {$package['version']} {$package['release']} \n";
+			}
+		}
+
+		// Criterions can contain both os and package under one criteria
+		if ($os != null && !empty($package)) {
+#print "Storing $os, $package\n";
+			if (!array_key_exists($os, $res['redhat_releases'])) {
+				$res['redhat_releases'][$os] = array();
+			}
+			array_push($res['redhat_releases'][$os], $package);
+			// Empty package varialble
+			$package = null;
+		}
+	}
+
+	if ($criterias->length > 0) {
+		// We have foung criterias, so pass them for further processing
+		foreach ($criterias as $criteria) {
+			if ($operator == "AND") {
+				processCriteriasWithReference($xpath, $criteria, $res, $os, $package);
+			} else {
+				processCriterias($xpath, $criteria, $res, $os, $package);
+			}
+		}
+	}
+}
 # Process each criteria
 function processCriterias(&$xpath, $criteriaElement, &$res, $os, $package) {
 	$operator = $criteriaElement->attributes->item(0)->value;
@@ -67,7 +130,7 @@ function processCriterias(&$xpath, $criteriaElement, &$res, $os, $package) {
 		// We have foung criterias, so pass them for further processing
 		foreach ($criterias as $criteria) {
 			if ($operator == "AND") {
-				processCriterias($xpath, $criteria, $res, &$os, &$package);
+				processCriteriasWithReference($xpath, $criteria, $res, $os, $package);
 			} else {
 				processCriterias($xpath, $criteria, $res, $os, $package);
 			}
