@@ -2,7 +2,7 @@
 <?php
 
 include_once("../config/config.php");
-include_once("../include/functions-dan.php");
+include_once("../include/functions-debian.php");
 include_once("../include/mysql_connect.php");
 
 /*
