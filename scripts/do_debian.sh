@@ -1,11 +1,11 @@
 #!/bin/bash
 
-WD=/var/www/pakiti/scripts
+WD=/var/www/pakiti-egi/scripts
 
-if [ ! -d /tmp/pakiti-debian ]; then
-    mkdir /tmp/pakiti-debian || exit 1
+if [ ! -d /tmp/pakiti-egi-debian ]; then
+    mkdir /tmp/pakiti-egi-debian || exit 1
 fi
-cd /tmp/pakiti-debian || exit 1
+cd /tmp/pakiti-egi-debian || exit 1
 
 if [ ! -d DSA/.svn ]; then
     svn checkout svn://anonscm.debian.org/svn/secure-testing/data/DSA/ >/dev/null || exit 1
@@ -18,4 +18,4 @@ else
 fi
 
 cd $WD
-./process_dsa.php < /tmp/pakiti-debian/DSA/list
+./process_dsa.php < /tmp/pakiti-egi-debian/DSA/list
