@@ -13,4 +13,3 @@ for i in `ldapsearch -LLL -x -H ldap://aldor.ics.muni.cz/  -b 'cn=csirt,ou=group
 echo "); ?>" >> $TMP
 
 mv $TMP $OUTPUT
-
