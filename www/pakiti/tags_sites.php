@@ -53,7 +53,7 @@ $country = (isset($_GET["country"])) ? mysql_real_escape_string($_GET["country"]
 $site = (isset($_GET["site"])) ? mysql_real_escape_string($_GET["site"]) : "";
 $cve = (isset($_GET["cve"])) ? mysql_real_escape_string($_GET["cve"]) : "";
 $roc = (isset($_GET["roc"])) ? mysql_real_escape_string($_GET["roc"]) : "";
-$pakiti_tag = (isset($_GET["a"])) ? mysql_real_escape_string($_GET["a"]) : "Nagios";
+$pakiti_tag = (isset($_GET["a"])) ? mysql_real_escape_string($_GET["a"]) : "";
 
 $title = "Pakiti CVEs by tags results";
 
@@ -90,13 +90,15 @@ $sql = "SELECT DISTINCT
 	FROM 
 		cve_tags, cve, cves, installed_pkgs_cves, host, site
 	WHERE 
-		host.admin = '$pakiti_tag' AND
 		cve_tags.enabled = 1 AND
 		cve_tags.cve_name=cve.cve_name AND
 		cve.cves_id=cves.id AND
 		cves.id=installed_pkgs_cves.cve_id AND
 		installed_pkgs_cves.host_id=host.id AND
 		host.site_id=site.id";
+if (!empty($pakiti_tag)) {
+	$sql .= " AND host.admin='$pakiti_tag'";
+}
 # Authz
 	if ($enable_authz) {
 		$entities_ret = get_authz_site_ids();
@@ -143,13 +145,13 @@ ksort($cves);
 $act_site = "";
 $sites = array();
 
+		#host.admin = '$pakiti_tag' AND
 $sql = "SELECT DISTINCT 
 		host.host, arch.arch, site.name, site.country, cve.cve_name,
-		site.id, cve_tags.tag, os.os, site.mail, UNIX_TIMESTAMP(host.time), site.roc
+		site.id, cve_tags.tag, os.os, site.mail, UNIX_TIMESTAMP(host.time), site.roc, host.admin
 	FROM 
 		cve_tags, cve, cves, installed_pkgs_cves, host, site, arch, os
 	WHERE 
-		host.admin = '$pakiti_tag' AND
 		cve_tags.enabled = 1 AND
 		cve_tags.cve_name=cve.cve_name AND
 		cve.cves_id=cves.id AND
@@ -163,6 +165,7 @@ if (!empty($country)) $sql .= " AND site.country = '$country'";
 if (!empty($cve)) $sql .= " AND cve.cve_name = '$cve'";
 if (!empty($site)) $sql .= " AND site.name = '$site'";
 if (!empty($roc)) $sql .= " AND site.roc = '$roc'";
+if (!empty($pakiti_tag)) $sql .= " AND host.admin = '$pakiti_tag'";
 
 # Authz
 	if ($enable_authz) {
@@ -200,6 +203,7 @@ while ($row = mysql_fetch_row($sqlres)) {
 	$res[$hosts]["cve_tag"] = $row[6];
 	$res[$hosts]["host_os"] = $row[7];
 	$res[$hosts]["time"] = date("j.n.y H:i", $row[9]);
+	$res[$hosts]["tag"] = $row[11];
 	$hosts++;
 
 	${"sites_$row[6]"}[$row[2]]++;
@@ -219,6 +223,16 @@ while ($row = mysql_fetch_row($sqlres)) {
 		$affected_cves[$row[4]] = 1;
 		$current_cve = $row[4];
 	}
+}
+
+# Select tags
+$sql = "SELECT DISTINCT admin from host";
+if (!$sqlres = mysql_query($sql)) {
+        print "ERROR: " . mysql_error();
+}
+$pakiti_tags = array();
+while ($row = mysql_fetch_row($sqlres)) {
+	array_push($pakiti_tags, $row[0]);
 }
 
 ?>
@@ -302,6 +316,24 @@ while ($row = mysql_fetch_row($sqlres)) {
         }
         print "</td><td>";
 
+        /* Show selected Tag */
+        print "Tag:";
+        if (!$authorized) {
+                print "&nbsp; $pakiti_tag";
+        } else {
+
+                print ' <select name="a" onchange="gform.submit();">';
+		print '<option>';
+                foreach ($pakiti_tags as $key) {
+                        print '<option' ;
+                        if ( $pakiti_tag ==  $key )
+                                print " selected";
+                        print " keyue='$key'>$key" ;
+                }
+                print "</select>";
+        }
+        print "</td><td>";
+
 
         /* Show selected Site */
         print "CVE:";
@@ -366,6 +398,9 @@ while ($row = mysql_fetch_row($sqlres)) {
 	<td>
 		Last report
 	</td>
+	<td>
+		Tag
+	</td>
 </tr>
 
 
@@ -383,6 +418,7 @@ foreach ($res as $key => $val) {
 	$cve_tag = $val["cve_tag"];
 	$host_os = $val["host_os"];
 	$time = $val["time"];
+	$host_tag = $val["tag"];
 
 
 	$bg_color == 'class="bg1"' ? $bg_color = 'class="bg2"': $bg_color = 'class="bg1"';
@@ -412,6 +448,18 @@ foreach ($res as $key => $val) {
 	print "<td>$host_os</td>";
 	print "<td><a href=\"cve.php?cve=$cve_name&os=$host_os\" style=\"color: red;\">$cve_name</a></td>";
 	print"<td>$time</td>";
+	print"<td>";
+	switch ($host_tag) {
+		case "Nagios":
+			print '<img width="16" src="img/nagios.png" alt="EGI Nagios">';
+			break;
+		case "Manual":
+			print '<img width="16" src="img/manual.png" alt="Manual">';
+			break;
+		default:
+			print $host_tag;
+	}
+	print"</td>";
 	print "</tr>\n";
 }
 ?>
