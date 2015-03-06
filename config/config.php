@@ -70,4 +70,7 @@ $trusted_proxy_clients = array ( );
 
 # Set of tags which can be used to tag the CVEs (e.g. critical)
 $cve_tags = array( "EGI-Critical", "EGI-High" );
+
+# Public key used for decrypting client reports
+$cern_report_decryption_key = "/etc/apache2/ssl/pakiti.egi.eu.key-forCERN";
 ?>
