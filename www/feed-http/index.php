@@ -43,8 +43,7 @@ if (isset($_POST["v"]))
 	$version = mysql_real_escape_string(trim(htmlspecialchars($_POST["v"])));
 else if (isset($_POST["version"]))
 	$version = mysql_real_escape_string(trim(htmlspecialchars($_POST["version"])));
-else $version = "unknown";
-
+else $version = "cern_1"; // If no version is provided then set version to CERN client
 
 # Detect type of report, if it is not Pakiti genuine then convert it
 switch ($version) {
@@ -65,7 +64,7 @@ switch ($version) {
 		# Map onto the variables
 
 		# Decrypt the report
-		$data = $_POST["data"];
+		$data = file_get_contents('php://input');
 		$tmpFileIn = tempnam("/dev/shm/", "cern_IN_");
 		# Store encrypted report into the file and the use openssl smime to decode it
 		if (file_put_contents($tmpFileIn, $data) === FALSE) {
@@ -123,7 +122,7 @@ switch ($version) {
 			syslog(LOG_ERR, "Cannot open file with the report '$tmpFileOut'");
 		}
 		fclose($handle);
-		#unlink($tmpFileOut);
+		unlink($tmpFileOut);
 		break;
 
 	default:
@@ -748,9 +747,9 @@ if (!mysql_query($sql)) {
 }
 mysql_close($link);
 if ($asynchronous_mode == 1) {
-	syslog(LOG_INFO, "Information recorded for $host in time: " . end_time($starttime));
+	syslog(LOG_INFO, "Information recorded for $host from $version in time: " . end_time($starttime));
 } else {
-	syslog(LOG_INFO, "Information recorded for $host in time: " . end_time($starttime) . " (Sec: $num_of_sec, Others: $num_of_others, CVEs: $num_of_cves)");
+	syslog(LOG_INFO, "Information recorded for $host from $version in time: " . end_time($starttime) . " (Sec: $num_of_sec, Others: $num_of_others, CVEs: $num_of_cves)");
 }
 closelog();
 
