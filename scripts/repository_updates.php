@@ -7,6 +7,8 @@ include_once("../include/mysql_connect.php");
 
 $verbose = 0;
 $options = getopt ("fv");
+$force_update = false;
+$web_proxy = "";
 
 foreach (array_keys($options) as $opt) switch ($opt) {
   case 'f':
