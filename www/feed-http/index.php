@@ -107,7 +107,7 @@ switch ($version) {
 		    }
 
 		    # Set admin and proxy
-		    $admin = "CERN";
+		    $admin = "WLCG";
 		    $proxy = 0;
 		   
 		    $pkgs = "";
