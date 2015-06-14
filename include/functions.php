@@ -143,10 +143,10 @@ function order($val) {
 function dpkgvercmp_in($a, $b) {
         $i = 0;
         $j = 0;
-        $l = strlen($a)-1;
-        $k = strlen($b)-1;
+        $l = strlen($a);
+        $k = strlen($b);
 
-        while ($i < $l || $j < $k) {
+        while ($i < $l && $j < $k) {
                 $first_diff = 0;
 
                 while (($i < $l && !ctype_digit($a[$i])) || ($j < $k && !ctype_digit($b[$j]))) {
@@ -157,21 +157,33 @@ function dpkgvercmp_in($a, $b) {
                         $j++;
                 }
 
-                while ( $i < $l && $a[$i] == '0' ) $i++;
-                while ( $j < $k && $b[$j] == '0' ) $j++;
-
-                while (($i < $l && ctype_digit($a[$i])) && ($j < $k && ctype_digit($b[$j]))) {
-                        if (!$first_diff) $first_diff = ord($a[$i]) - ord($b[$j]);
+                # Cumulate digits into umber
+                $a_num = 0;
+                $a_has_num = 0;
+                while ( $i < $l && ctype_digit($a[$i])) {
+                        $a_num = $a_num*10 + $a[$i];
+                        $a_has_num = 1;
                         $i++;
+                }
+                $b_num = 0;
+                $b_has_num = 0;
+                while ( $j < $k && ctype_digit($b[$j])) {
+                        $b_num = $b_num*10 + $b[$j];
+                        $b_has_num = 1;
                         $j++;
                 }
 
-		if ($i == $j && (ctype_digit($a[$i]) && ctype_digit($b[$j]))) return strcmp($a[$i], $b[$j]);
-                if (ctype_digit($a[$i])) return 1;
-                if (ctype_digit($b[$j])) return -1;
-                if ($first_diff) return $first_diff;
+                if (($a_has_num && $b_has_num) && $a_num != $b_num) {
+                        return $a_num == $b_num ? 0 : ($a_num > $b_num ? 1 : -1);
+                }
+                if ($a_has_num && !$b_has_num) return 1;
+                if (!$a_has_num && $b_has_num) return -1;
+                if ($a_has_num == $b_has_num && ($i == $l || $j == $k)) {
+                        return $l == $k ? 0 : ($l > $k ? 1 : -1);
+                }
         }
-        return 0;
+
+        return $l == $k ? 0 : ($l > $k ? 1 : -1);
 }
 
 # Compare DPKG versions
