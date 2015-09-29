@@ -68,4 +68,17 @@ print '<table class="headertable">
 	</tr>
 	</table>';
 }
+
+function print_footer()
+{
+    global $footer_image;
+
+    if (!isset($footer_image) or $footer_image == "")
+        return 0;
+
+    print("<p align='center'>");
+    printf('<img src="%s">', $footer_image);
+    print("</p>");
+}
+
 ?>

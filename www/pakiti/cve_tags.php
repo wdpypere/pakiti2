@@ -187,5 +187,7 @@ if (!empty($err)) print $err;
     echo "<br><small>Executed in ".round($totaltime, 2)." seconds</small></p>";
 ?>
 
+<?php print_footer(); ?>
+
 </body></html>
 

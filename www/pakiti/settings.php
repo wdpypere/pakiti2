@@ -784,6 +784,8 @@ Quick navigation:
 </table>
 </form>
 
+<?php print_footer(); ?>
+
 </body>
 </html>
 

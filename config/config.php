@@ -73,4 +73,7 @@ $cve_tags = array( "EGI-Critical", "EGI-High" );
 
 # Public key used for decrypting client reports
 $cern_report_decryption_key = "/etc/apache2/ssl/pakiti.egi.eu.key-forCERN";
+
+# "Acknowledgement" footer. Specified as a relative path in the web root.
+$footer_image = "img/egi_banner.png";
 ?>

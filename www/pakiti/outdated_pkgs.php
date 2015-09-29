@@ -613,6 +613,8 @@ $mtime = microtime();
 
 ?>
 
+<?php print_footer(); ?>
+
 <script type="text/javascript">
 	var tagsMissing = "<?php echo $N;?>";
 	var tagsOutdated = "<?php echo $M;?>";

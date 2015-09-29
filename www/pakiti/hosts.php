@@ -563,6 +563,9 @@ print '</table>';
     $totaltime = ($endtime - $starttime);
     echo "<br><small>Executed in ".round($totaltime, 2)." seconds</small></font></p>";
 ?>
+
+<?php print_footer(); ?>
+
 <script type="text/javascript">
 	var alladmins = "<?php print $alladmins; ?>";
 	var expandCollapse = 0;

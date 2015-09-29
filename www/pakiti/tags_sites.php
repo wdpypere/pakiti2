@@ -552,8 +552,9 @@ foreach ($res as $key => $val) {
     $endtime = $mtime;
     $totaltime = ($endtime - $starttime);
     echo "<br><small>Executed in ".round($totaltime, 2)." seconds</small></font></p>";
-
 ?>
+
+<?php print_footer(); ?>
 
 </body></html>
 

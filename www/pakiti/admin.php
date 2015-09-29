@@ -193,6 +193,9 @@ Domain: <select name="domain_id">
 		print "$dn</br>";
 	}
 ?>
+
+<?php print_footer(); ?>
+
 </body>
 </html>
 

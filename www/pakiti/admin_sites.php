@@ -204,6 +204,9 @@ Site: <select name="site_id">
 		print "$dn</br>";
 	}
 ?>
+
+<?php print_footer(); ?>
+
 </body>
 </html>
 
