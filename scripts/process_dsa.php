@@ -58,7 +58,8 @@ while ($line = fgets(STDIN)) {
         $list = preg_split("/\s+/", $matches[3]);
         $package_version = $list[0];
         if ($package_version == "<not-affected>" ||
-                $package_version == "<unfixed>") {
+                $package_version == "<unfixed>" ||
+                $package_version == "<end-of-life>") {
             continue;
         }
 
