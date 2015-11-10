@@ -36,7 +36,7 @@ function processCriteriasWithReference(&$xpath, $criteriaElement, &$res, &$os, &
 	if ($criterions->length > 0) {
 		// We have found criterions, so parse them. Try to find redhat version and packages names/versions
 		foreach ($criterions as $criterion) {
-			$comment = $criterion->attributes->item(1)->value;
+			$comment = $criterion->attributes->item(0)->value;
 			if (strpos($comment, "is installed")) {
 				preg_match("/^Red Hat Enterprise Linux.* (\d+)[ ]*(Client|Server|Workstation|ComputeNode|)[ ]*is installed$/", $comment, $redhat_release);
 				$os = $redhat_release[1];
@@ -99,7 +99,7 @@ function processCriterias(&$xpath, $criteriaElement, &$res, $os, $package) {
 	if ($criterions->length > 0) {
 		// We have found criterions, so parse them. Try to find redhat version and packages names/versions
 		foreach ($criterions as $criterion) {
-			$comment = $criterion->attributes->item(1)->value;
+			$comment = $criterion->attributes->item(0)->value;
 			if (strpos($comment, "is installed")) {
 				preg_match("/^Red Hat Enterprise Linux.* (\d+)[ ]*(Client|Server|Workstation|ComputeNode|)[ ]*is installed$/", $comment, $redhat_release);
 				$os = $redhat_release[1];
