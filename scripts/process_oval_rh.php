@@ -174,6 +174,20 @@ while ($row = mysql_fetch_row($repositories)) {
 
 		$res['definition_id'] = $entry->attributes->item(0)->value;
 
+		// Don't consider marginal versions, like 'Supplementary for RHEL' and the like, which
+		// easily might distort results
+		$platform_query = 'def:metadata/def:affected/def:platform';
+		$platforms = $xpath->query($platform_query, $entry);
+		$supported = False;
+		foreach ($platforms as $platform) {
+			if (preg_match('/^Red Hat Enterprise Linux [0-9\.]+$/', $platform->nodeValue)) {
+				$supported = True;
+				break;
+			}
+		}
+		if (!$supported)
+			continue;
+
 		$el_severity = $entry->getElementsByTagName('severity')->item(0);
 		if (!empty($el_severity)) {
 			$res['severity'] = $el_severity->nodeValue;
