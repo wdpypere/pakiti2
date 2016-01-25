@@ -202,7 +202,7 @@ while ($row = mysql_fetch_row($sqlres)) {
 	$res[$hosts]["site_id"] = $row[5];
 	$res[$hosts]["cve_tag"] = $row[6];
 	$res[$hosts]["host_os"] = $row[7];
-	$res[$hosts]["time"] = date("j.n.y H:i", $row[9]);
+	$res[$hosts]["time"] = date("j.n.Y H:i", $row[9]);
 	$res[$hosts]["tag"] = $row[11];
 	$hosts++;
 
@@ -378,11 +378,11 @@ while ($row = mysql_fetch_row($sqlres)) {
 		Country (<?php (!empty($country)) ? print "1" : print sizeof($affected_countries); ?>)
 	</td>
 	<td width="100">
-		Site (<?php (!empty($site)) ? print "1" : print sizeof($sites); ?>)
-	</td>
-	<td width="100">
 		ROC (<?php (!empty($roc)) ? print "1" : print sizeof($rocs); ?>)
 	</td>	
+	<td width="100">
+		Site (<?php (!empty($site)) ? print "1" : print sizeof($sites); ?>)
+	</td>
 	<td>
 		Host (<?= $hosts; ?>)
 	</td>
@@ -432,18 +432,19 @@ foreach ($res as $key => $val) {
 	}
 	print "</td>";
 	print "<td>$site_country</td>";
+	print "<td>$site_roc</td>";
 	print "<td><b>";
 	if ($authorized) print "<a href=\"hosts.php?s=$site_id\">";
 	print $site_name;
 	if ($authorized) print "</a>";
-	print "</b>\n";
 	print "</td>";
-	print "<td>$site_roc</td>";
+	print "</b>\n";
 	print "<td>";
 	if ($authorized) print "<a href=\"host.php?h=$host\">";
 	print "&nbsp;&nbsp;$host";
 	if ($authorized) print "</a>";
-	print "</td>\n";
+	print "</td>";
+
 	print "<td>$host_arch</td>";
 	print "<td>$host_os</td>";
 	print "<td><a href=\"cve.php?cve=$cve_name&os=$host_os\" style=\"color: red;\">$cve_name</a></td>";
