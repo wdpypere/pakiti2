@@ -527,7 +527,7 @@ $num_of_others = 0;
 $we_have_kernel = false;
 $count_items = count($items[1]);
 
-for ($i = 0; $i <= $count_items; $i++) {
+for ($i = 0; $i < $count_items; $i++) {
 	$act_version_id = NULL;
 
 	# Data from report
@@ -676,20 +676,6 @@ for ($i = 0; $i <= $count_items; $i++) {
 		    syslog(LOG_ERR, "DB: Unable to add host-package entry: $mysql_e ... $sql"); 
 		}
 		$installed_pkg_id = mysql_insert_id();
-
-		# Send package name if there is a new version
-		if ($report == 1) {
-			if ($act_version_id != NULL) {
-				print "$r_pkg_name ".$act[0];
-				if (!empty($act[3])) print "-".$act[3];
-				if ($act_version_is_sec == 1) {
-					print " SEC ";
-				} else print " ORD ";
-				print $r_pkg_version;
-				if (!empty($r_pkg_rel)) print "-".$r_pkg_rel;
-				print "\n";
-			}
-		}
 
 		# Compare against CVEs
 		# Get pkg version from CVEs
