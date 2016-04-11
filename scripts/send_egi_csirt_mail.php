@@ -40,7 +40,6 @@ if (isset($argv[1])) $which_tag = $argv[1];
 $sql = "SELECT site.name, cve_tags.tag, unix_timestamp(max(host.time)), site.roc
         FROM cve_tags, cve, cves, installed_pkgs_cves, host, site, arch
         WHERE 
-                host.admin = 'Nagios' AND
                 cve_tags.enabled = 1 AND
                 cve_tags.cve_name=cve.cve_name AND
                 cve.cves_id=cves.id AND
