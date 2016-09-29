@@ -507,7 +507,7 @@
 			if ($row[4] >= 3 )
 				print ' style="color: #cc0000;">' ;
 			else print '>';
-			print date("j.n.y H:i", $row[3]) . '</td>';
+			print date("j.n.y H:i T", $row[3]) . '</td>';
 	 		
 			/* Actions */
 	                print "	<td>
@@ -548,7 +548,7 @@ foreach($admin_list as $admin) {
 
 	print "<td>$stats_worse_case[$admin]</td>";
 	print "<td><font color=\"#666666\">$stats_nb_dead[$admin]</font></td>";
-	print "<td>".date("j F Y H:i", $site_last_report_time)."</td>";
+	print "<td>".date("j F Y H:i T", $site_last_report_time)."</td>";
 	print "</tr>";
 }
 print '</table>';

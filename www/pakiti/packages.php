@@ -221,7 +221,7 @@ if ($pkg != "") {
 			$packages[$row[3]] = array();
 		}
 		array_push($hosts[$row[3]], $row[1]);
-		array_push($dates[$row[3]], date("j F Y H:i", $row[2]));
+		array_push($dates[$row[3]], date("j F Y H:i T", $row[2]));
 		if ($row[5] != "")
 			array_push($packages[$row[3]], $row[4] . "/" . $row[5]);
 		else

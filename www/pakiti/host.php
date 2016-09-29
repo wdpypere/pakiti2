@@ -275,7 +275,7 @@ if (mysql_num_rows($res)) {
 		$host_id = $row[0];
 		$host_os = $row[1];
 		$hostname = $row[2];
-		$hostdate = date("j.n.y H:i", $row[3]);
+		$hostdate = date("j.n.y H:i T", $row[3]);
 		$host_days = $row[4];
 		$arch_id = $row[5];
 		$os_id = $row[6];

@@ -236,7 +236,7 @@ if ($cve != "") {
 			$dates[$row[3]] = array();
 		}
 		array_push($hosts[$row[3]], $row[1]);
-		array_push($dates[$row[3]], date("j F Y H:i", $row[2]));
+		array_push($dates[$row[3]], date("j F Y H:i T", $row[2]));
 	}
 
 	$bg_color = 'class="bg1"';

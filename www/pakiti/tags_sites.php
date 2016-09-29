@@ -202,7 +202,7 @@ while ($row = mysql_fetch_row($sqlres)) {
 	$res[$hosts]["site_id"] = $row[5];
 	$res[$hosts]["cve_tag"] = $row[6];
 	$res[$hosts]["host_os"] = $row[7];
-	$res[$hosts]["time"] = date("j.n.Y H:i", $row[9]);
+	$res[$hosts]["time"] = date("j.n.Y H:i T", $row[9]);
 	$res[$hosts]["tag"] = $row[11];
 	$hosts++;
 
