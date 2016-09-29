@@ -28,4 +28,4 @@
 # POSSIBILITY OF SUCH DAMAGE. 
 
 
-mysqldump -p -u pakiti -h aldor.ics.muni.cz --compact --add-drop-table pakiti repositories os arch os_group oses_group cves_os settings site users user_site pkg_exception_cve pkgs_exceptions | sed 's/AUTO_INCREMENT=[0-9]*\b//' > pakiti2_configuration_backup-`date +%d.%m.%y`.sql
+mysqldump -p -u pakiti -h aldor3.ics.muni.cz --compact --add-drop-table pakiti repositories os arch os_group oses_group cves_os settings site users user_site pkg_exception_cve pkgs_exceptions | sed 's/AUTO_INCREMENT=[0-9]*\b//' > pakiti2_configuration_backup-`date +%d.%m.%y`.sql
