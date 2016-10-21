@@ -39,7 +39,7 @@ $site = (isset($_GET["site"])) ? mysql_real_escape_string($_GET["site"]) : "";
 $cve = (isset($_GET["cve"])) ? mysql_real_escape_string($_GET["cve"]) : "";
 $roc = (isset($_GET["roc"])) ? mysql_real_escape_string($_GET["roc"]) : "";
 $type = (isset($_GET["type"])) ? mysql_real_escape_string($_GET["type"]) : "";
-$pakiti_tag = (isset($_GET["a"])) ? mysql_real_escape_string($_GET["a"]) : "Nagios";
+$pakiti_tag = (isset($_GET["a"])) ? mysql_real_escape_string($_GET["a"]) : "";
 
 # Default output type is CSV
 if ($type == "") {
@@ -64,7 +64,6 @@ $sql = "SELECT DISTINCT
 	FROM 
 		cve_tags, cve, cves, installed_pkgs_cves, host, site, arch, os
 	WHERE 
-		host.admin = '$pakiti_tag' AND
 		cve_tags.enabled = 1 AND
 		cve_tags.cve_name=cve.cve_name AND
 		cve.cves_id=cves.id AND
@@ -78,6 +77,7 @@ if (!empty($country)) $sql .= " AND site.country = '$country'";
 if (!empty($cve)) $sql .= " AND cve.cve_name = '$cve'";
 if (!empty($site)) $sql .= " AND site.name = '$site'";
 if (!empty($roc)) $sql .= " AND site.roc = '$roc'";
+if (!empty($pakiti_tag)) $sql .= " AND host.admin = '$pakiti_tag'";
 
 # Authz
 	if ($enable_authz) {
