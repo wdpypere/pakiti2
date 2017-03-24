@@ -5,6 +5,28 @@ $config = '/etc/pakiti2/pakiti2-server-egi.conf';
 include_once("../include/mysql_connect.php");
 include_once("../config/admins_acl.php");
 
+function add_user($site_id, $forename, $surname, $dn)
+{
+	$sql = "select id, user from users where dn='$dn'";
+	$res = mysql_query($sql);
+	if ($res === FALSE)
+		return -1;
+	if (mysql_num_rows($res) > 0) {
+		$row = mysql_fetch_row($res);
+		$user_id = $row[0];
+	} else {
+		$name = $forename . " " . $surname;
+		$sql = "insert into users (user, dn) values ('$name', '$dn')";
+		mysql_query($sql);
+		$user_id = mysql_insert_id();
+	}
+
+	$sql = "insert ignore into user_site (user_id, site_id) values ($user_id, $site_id)";
+	mysql_query($sql);
+
+	return ($user_id);
+}
+
 $verbose = 0;
 if (isset($argv[1]) && $argv[1] == "-v") $verbose = 1;
 
@@ -14,53 +36,12 @@ $seo->load("/tmp/pakiti-seo.xml", LIBXML_NOWARNING | LIBXML_NOERROR);
 
 if ($seo === false) {
         file_put_contents('php://stderr', "Cannot load list of Site Security Contats from the GOCDB");
-        $sites = array();
+        $seo_sites = array();
 } else {
-        $sites = $seo->getElementsByTagName('SITE');
+        $seo_sites = $seo->getElementsByTagName('SITE');
 }
 
 $err = '';
-foreach ($sites as $site) {
-        $site_name = $site->getAttribute('NAME');
-        $sql = "select id from site where name='$site_name'";
-        $res = mysql_query($sql);
-        $row = mysql_fetch_row($res);
-        $site_id = $row[0];
-
-        $scs_contact = $site->getElementsByTagName('CONTACT');
-        foreach ($scs_contact as $contact) {
-                $scs_forename = $contact->getElementsByTagName('FORENAME');
-                $scs_surname = $contact->getElementsByTagName('SURNAME');
-                $scs_certdn = $contact->getElementsByTagName('CERTDN');
-
-                $sc_name =  $scs_forename->item(0)->nodeValue . " " . $scs_surname->item(0)->nodeValue;
-                $sc_dn = $scs_certdn->item(0)->nodeValue;
-
-                $sql = "select id, user from users where dn='$sc_dn'";
-                $res = mysql_query($sql);
-                if ($verbose) print "Processing $sc_name for site $site_name\n";
-                if (mysql_num_rows($res) > 0) {
-                        $row = mysql_fetch_row($res);
-                        $user_id = $row[0];
-                        $user_name = $row[1];
-
-                        $sql = "insert ignore into user_site (user_id, site_id) values ($user_id, $site_id)";
-                        mysql_query($sql);
-
-                        if ($sc_name != $user_name)  {
-                                $sql = "update users set user='$sc_name' where id='$user_id'";
-                                mysql_query($sql);
-                        }
-                } else {
-                        $sql = "insert into users (user, dn) values ('$sc_name', '$sc_dn')";
-                        mysql_query($sql);
-                        $user_id = mysql_insert_id();
-                        $sql = "insert ignore into user_site (user_id, site_id) values ($user_id, $site_id)";
-                        mysql_query($sql);
-                        if ($verbose) print "Adding $sc_name to $site_name\n";
-                }
-        }
-}
 # Get NGI security officers
 $ngi_contacts = new DOMDocument();
 $ngi_contacts->load("/tmp/pakiti-ngi-so.xml", LIBXML_NOWARNING | LIBXML_NOERROR);
@@ -81,10 +62,11 @@ if ($gocdb_sites === false) {
         $sites = $gocdb_sites->getElementsByTagName('SITE');
 }
 
+$deleted_users = array();
 foreach ($sites as $site) {
-        $site_name = $site->getAttribute('NAME');
-        $site_country = $site->getAttribute('COUNTRY');
-        $site_ngi = $site->getAttribute('ROC');
+        $site_name = mysql_real_escape_string($site->getAttribute('NAME'));
+        $site_country = mysql_real_escape_string($site->getAttribute('COUNTRY'));
+        $site_ngi = mysql_real_escape_string($site->getAttribute('ROC'));
         $sql = "select id from site where name='$site_name'";
         $res = mysql_query($sql);
         $site_id = 0;
@@ -98,8 +80,34 @@ foreach ($sites as $site) {
                 $site_id = $row[0];
         }
 
+        $added_users = array();
+
+        foreach ($seo_sites as $seo_site) {
+                $seo_site_name = $seo_site->getAttribute('NAME');
+
+                if ($seo_site_name != $site_name) continue;
+
+                $scs_contact = $seo_site->getElementsByTagName('CONTACT');
+                foreach ($scs_contact as $contact) {
+                        $scs_forename = $contact->getElementsByTagName('FORENAME');
+                        $scs_surname = $contact->getElementsByTagName('SURNAME');
+                        $scs_certdn = $contact->getElementsByTagName('CERTDN');
+
+                        $forename = mysql_real_escape_string($scs_forename->item(0)->nodeValue);
+                        $surname = mysql_real_escape_string($scs_surname->item(0)->nodeValue);
+                        $dn = mysql_real_escape_string($scs_certdn->item(0)->nodeValue);
+
+                        $user_id = add_user($site_id, $forename, $surname, $dn);
+                        if ($user_id == -1)
+                                continue;
+
+                        if ($verbose) printf("%s %s added to %s as site SO\n", $forename, $surname, $site_name);
+                        $added_users[$user_id] = 1;
+                }
+	    }
+
         foreach ($ngis as $ngi) {
-                $ngi_name = $ngi->getAttribute('ROC_NAME');
+                $ngi_name = mysql_real_escape_string($ngi->getAttribute('ROC_NAME'));
                 # We are looking for the right NGI
                 if ($ngi_name != $site_ngi) continue;
 
@@ -116,37 +124,61 @@ foreach ($sites as $site) {
                         $scs_surname = $contact->getElementsByTagName('SURNAME');
                         $scs_certdn = $contact->getElementsByTagName('CERTDN');
 
-                        $sc_name =  $scs_forename->item(0)->nodeValue . " " . $scs_surname->item(0)->nodeValue;
-                        $sc_dn = $scs_certdn->item(0)->nodeValue;
+                        $forename = mysql_real_escape_string($scs_forename->item(0)->nodeValue);
+                        $surname = mysql_real_escape_string($scs_surname->item(0)->nodeValue);
+                        $dn = mysql_real_escape_string($scs_certdn->item(0)->nodeValue);
 
-                        # Check if the user is a Pakiti administrator
-                        if (in_array($sc_dn, $admin_dns)) continue;
+                        $user_id = add_user($site_id, $forename, $surname, $dn);
+                        if ($user_id == -1)
+                                continue;
 
-                        $sql = "select id, user from users where dn='$sc_dn'";
-                        $res = mysql_query($sql);
-                        if ($verbose) print "Processing $sc_name for $ngi_name\n";
-                        if (mysql_num_rows($res) > 0) {
-                                $row = mysql_fetch_row($res);
-                                $user_id = $row[0];
-                                $user_name = $row[1];
-
-                                $sql = "insert ignore into user_site (user_id, site_id) values ($user_id, $site_id)";
-                                mysql_query($sql);
-
-                                if ($sc_name != $user_name)  {
-                                        $sql = "update users set user='$sc_name' where id='$user_id'";
-                                        mysql_query($sql);
-                                }
-                        } else {
-                                $sql = "insert into users (user, dn) values ('$sc_name', '$sc_dn')";
-                                mysql_query($sql);
-                                $user_id = mysql_insert_id();
-                                $sql = "insert ignore into user_site (user_id, site_id) values ($user_id, $site_id)";
-                                mysql_query($sql);
-                                if ($verbose) print "Adding $sc_name to $site_name for NGI $ngi_name\n";
-                        }
+                        if ($verbose) printf("%s %s added to %s as NGI SO\n", $forename, $surname, $site_name);
+                        $added_users[$user_id] = 1;
                 }
         }
+
+        if (empty($added_users)) {
+                $sql = "select user_id from user_site where site_id = $site_id";
+        } else {
+                $ids = implode(',', array_keys($added_users));
+                $sql = "select user_id from user_site where site_id = $site_id and user_id not in ($ids)";
+        }
+        $res = mysql_query($sql);
+        if ($res === FALSE)
+                continue;
+        if (mysql_num_rows($res) <= 0)
+                continue;
+
+        /* Remove users not assigned to the site anymore */
+        if ($verbose) printf("Removing from %s:\n", $site_name);
+        while ($row = mysql_fetch_array($res, MYSQL_NUM)) {
+                $user_id = $row[0];
+                $sql = "select user from users where id = $user_id";
+                $user = mysql_query($sql);
+                if ($verbose) printf("\t%s\n", mysql_fetch_row($user)[0]);
+
+                $sql = "delete from user_site where site_id = $site_id and user_id = $user_id";
+                mysql_query($sql);
+                $deleted_users[$user_id] = 1;
+        }
+}
+
+/* Remove orphaned users, i.e. those not assigned to any site any more */
+foreach (array_keys($deleted_users) as $user_id) {
+        $sql = "select user_id from user_site where user_id = $user_id";
+        $res = mysql_query($sql);
+        if (mysql_num_rows($res) > 0)
+                continue;
+
+        $sql = "select user,dn from users where id = $user_id";
+        $res = mysql_query($sql);
+        $row = mysql_fetch_row($res);
+        $user = $row[0];
+        $dn = $row[1];
+
+        $sql = "delete from users where id = $user_id";
+        mysql_query($sql);
+        if ($verbose) printf("%s (%s) removed from Pakiti\n", $user, $dn);
 }
 
 # Get CSIRT emails
