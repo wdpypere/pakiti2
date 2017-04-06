@@ -10,4 +10,3 @@ while ($row = mysql_fetch_row($res)) {
         mysql_query($sql);
 }
 ?>
-
