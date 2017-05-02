@@ -527,7 +527,7 @@ $num_of_others = 0;
 $we_have_kernel = false;
 $count_items = count($items[1]);
 
-for ($i = 0; $i < $count_items; $i++) {
+for ($i = 0; $i <= $count_items; $i++) {
 	$act_version_id = NULL;
 
 	# Data from report

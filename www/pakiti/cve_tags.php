@@ -123,7 +123,7 @@ if (!empty($err)) print $err;
 		?>
 	    </select></td>
 	<td>Reason: <input type="text" name="reason" size="50"></td>
-	<td>URL to the EGI Advisory: <input type="text" name="url" size="50" value="https://"></td>
+	<td>URL to the EGI Advisory: <input type="text" name="url" size="50" value=""></td>
 	<td><input type="submit" value="Add"></td>
 </tr>
 </table>
