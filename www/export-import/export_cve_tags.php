@@ -8,10 +8,7 @@ include("../../include/mysql_connect.php");
 #        <cveName>...</cveName>
 #        <reason>...</reason>
 #        <enabled>...</enabled>
-#        <tag>
-#            <name>...</name>
-#            <description>...</description>
-#        </tag>
+#        <tagName>...</tagName>
 #    </cveTag>
 #</cveTags>
 
@@ -31,7 +28,7 @@ if (!$res = mysql_query($sql)) {
                 $enabled = $row[2];
                 $tag = $row[3];
 		$infoUrl = $row[4];
-		$xml .= "<cveTag><cveName>$cve_name</cveName><reason>$reason</reason><infoUrl>$infoUrl</infoUrl><enabled>$enabled</enabled><tag><name>$tag</name><description></description></tag></cveTag>";
+		$xml .= "<cveTag><cveName>$cve_name</cveName><reason>$reason</reason><infoUrl>$infoUrl</infoUrl><enabled>$enabled</enabled><tagName>$tag</tagName></cveTag>";
 	}
 }
 
