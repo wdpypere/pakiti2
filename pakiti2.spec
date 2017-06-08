@@ -1,6 +1,6 @@
 Version: 2.1.6
 Name: pakiti2
-Release: 1
+Release: 1.ugent
 
 License: BSD
 Source: http://pakiti.sourceforge.net/rpms/%{name}/%{name}-%{version}.tar.gz
@@ -13,7 +13,7 @@ Url: http://pakiti.sourceforge.net
 
 %define _prefix /
 
-%description 
+%description
 Runs rpm -qa or dpkg -l on the hosts and sends results to the central server.
 
 Central server then process the results and checks whether the packages are
@@ -45,13 +45,15 @@ central Pakiti server using openssl s_client or curl.
 
 %package server
 BuildArch: noarch
-Requires: webserver, mysql-server, php , php-mysql, php-xml, mod_ssl
+Requires: webserver, mariadb-server, php, php-mysql, php-xml, mod_ssl
 Summary: Pakiti server - Patching status system.
 Group: Utilities/System
 Conflicts: pakiti-server
 
 %description server
 Server logic and web interface.
+
+%global debug_package %{nil}
 
 %prep
 
@@ -62,19 +64,19 @@ Server logic and web interface.
 %clean
 rm -rf %{buildroot}
 
-%install 
-install -D -m755  install/pakiti2-update.cron.daily	%{buildroot}/%{_sysconfdir}/cron.daily/pakiti2-server-update
-install -D -m755  install/pakiti2-init      		%{buildroot}/%{_sysconfdir}/init.d/pakiti2
+%install
+#install -D -m755  install/pakiti2-update.cron.daily	%{buildroot}/%{_sysconfdir}/cron.daily/pakiti2-server-update
+#install -D -m755  install/pakiti2-init      		%{buildroot}/%{_sysconfdir}/init.d/pakiti2
 install -D -m640  install/pakiti2-server.conf      	%{buildroot}/%{_sysconfdir}/pakiti2/pakiti2-server.conf
 install -D -m640  client/pakiti2-client.conf		%{buildroot}/%{_sysconfdir}/pakiti2/pakiti2-client.conf
 install -D -m755  client/pakiti2-client			%{buildroot}/usr/sbin/pakiti2-client
-install -D -m755  client/pakiti2-client.update.cron.daily	%{buildroot}/%{_sysconfdir}/cron.daily/pakiti2-client-update
+#install -D -m755  client/pakiti2-client.update.cron.daily	%{buildroot}/%{_sysconfdir}/cron.daily/pakiti2-client-update
 #install -m644  README          %{buildroot}/README
 #install -m622  pakiti.sql   %{buildroot}/pakiti.sql
 
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/scripts
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/include
-install -d %{buildroot}/%{_localstatedir}/www/pakiti2/install
+#install -d %{buildroot}/%{_localstatedir}/www/pakiti2/install
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/config
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/docs
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www
@@ -82,21 +84,21 @@ install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/img
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/api
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/feed
 install -d %{buildroot}/%{_localstatedir}/www/pakiti2/www/link
-install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client
-install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist
-install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/etc
-install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/etc/cron.daily
-install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/opt
-install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/opt/pakiti2-client
+#install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client
+#install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist
+#install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/etc
+#install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/etc/cron.daily
+#install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/opt
+#install -d %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/opt/pakiti2-client
 
 install -d %{buildroot}/%{_sysconfdir}/pakiti2
 
-install -m644   scripts/backup_configuration.sh	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/backup_configuration.sh
+#install -m644   scripts/backup_configuration.sh	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/backup_configuration.sh
 install -m644   scripts/process_oval_rh.php	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/process_oval_rh.php
-install -m644   scripts/process_oval_debian.php	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/process_oval_debian.php
-install -m644   scripts/process_dsa.php	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/process_dsa.php
-install -m644   scripts/do_debian.sh	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/do_debian.sh
-install -m644   scripts/process_oval_rh_php4.php	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/process_oval_rh_php4.php
+#install -m644   scripts/process_oval_debian.php	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/process_oval_debian.php
+#install -m644   scripts/process_dsa.php	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/process_dsa.php
+#install -m644   scripts/do_debian.sh	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/do_debian.sh
+#install -m644   scripts/process_oval_rh_php4.php	%{buildroot}/%{_localstatedir}/www/pakiti2/scripts/process_oval_rh_php4.php
 install -m644   scripts/recalculate_vulnerabilities.php   %{buildroot}/%{_localstatedir}/www/pakiti2/scripts/recalculate_vulnerabilities.php
 install -m644   scripts/recalculate_cves.php   %{buildroot}/%{_localstatedir}/www/pakiti2/scripts/recalculate_cves.php
 install -m644   scripts/repository_updates.php   %{buildroot}/%{_localstatedir}/www/pakiti2/scripts/repository_updates.php
@@ -111,8 +113,8 @@ install -m644   include/mysql_connect.php   %{buildroot}/%{_localstatedir}/www/p
 #install -m644   install/pakiti2.sql   %{buildroot}/%{_localstatedir}/www/pakiti2/pakiti2.sql
 install -m600   config/config.php   %{buildroot}/%{_localstatedir}/www/pakiti2/config/config.php
 
-install -m600   client/pakiti2-client-dist/etc/cron.daily/pakiti2-client   %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/etc/cron.daily/pakiti2-client
-install -m600   client/pakiti2-client-dist/opt/pakiti2-client/pakiti2-client   %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/opt/pakiti2-client/pakiti2-client
+#install -m600   client/pakiti2-client-dist/etc/cron.daily/pakiti2-client   %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/etc/cron.daily/pakiti2-client
+#install -m600   client/pakiti2-client-dist/opt/pakiti2-client/pakiti2-client   %{buildroot}/%{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/opt/pakiti2-client/pakiti2-client
 
 install -m644   www/pakiti/hosts.php    %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/hosts.php
 install -m644   www/pakiti/index.php    %{buildroot}/%{_localstatedir}/www/pakiti2/www/pakiti/index.php
@@ -151,20 +153,20 @@ install -m644   www/feed/index.php     %{buildroot}/%{_localstatedir}/www/pakiti
 #ln -s ../pakiti/packages.php www/link/packages.php
 #ln -s ../pakiti/pakiti.css www/link/pakiti.css
 
-%files client-manual
-%defattr(-,root,root)
+#%files client-manual
+#%defattr(-,root,root)
 #%attr(0755,root,root) %{_sysconfdir}/init.d/pakiti2
 #%attr(0755,root,root) %{_sysconfdir}/cron.daily/pakiti2-client-update
 #%attr(0755,root,root) %{_sbindir}/pakiti2-client
 #%config(noreplace)    %{_sysconfdir}/pakiti2/pakiti2-client.conf
-%doc client/pakiti2-client
-%doc client/pakiti2-client.conf
-%doc client/pakiti2-client.update.cron.daily
-%doc client/README
+#%doc client/pakiti2-client
+#%doc client/pakiti2-client.conf
+#%doc client/pakiti2-client.update.cron.daily
+#%doc client/README
 
 %files client
 %defattr(-,root,root)
-%attr(0755,root,root) %{_sysconfdir}/cron.daily/pakiti2-client-update
+#%attr(0755,root,root) %{_sysconfdir}/cron.daily/pakiti2-client-update
 %attr(0755,root,root) /usr/sbin/pakiti2-client
 %config(noreplace)    %{_sysconfdir}/pakiti2/pakiti2-client.conf
 %doc client/README
@@ -172,7 +174,7 @@ install -m644   www/feed/index.php     %{buildroot}/%{_localstatedir}/www/pakiti
 %files server
 %defattr(-,root,root)
 %attr(0664,root,root) %{_localstatedir}/www/pakiti2/scripts/*
-%attr(0664,root,root) %{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/*
+#%attr(0664,root,root) %{_localstatedir}/www/pakiti2/client/pakiti2-client-dist/*
 
 %attr(0640,root,apache) %{_localstatedir}/www/pakiti2/config/config.php
 
@@ -187,25 +189,25 @@ install -m644   www/feed/index.php     %{buildroot}/%{_localstatedir}/www/pakiti
 
 %attr(0664,root,root) %{_localstatedir}/www/pakiti2/www/feed/index.php
 
-%attr(0664,root,root) %{_sysconfdir}/init.d/pakiti2
+#%attr(0664,root,root) %{_sysconfdir}/init.d/pakiti2
 
-%attr(0775,root,root) %{_sysconfdir}/cron.daily/pakiti2-server-update
+#%attr(0775,root,root) %{_sysconfdir}/cron.daily/pakiti2-server-update
 %attr(0640,root,apache) %config(noreplace) %{_sysconfdir}/pakiti2/pakiti2-server.conf
 
-%doc install/pakiti2.sql 
-%doc docs/pakiti2.apache2
-%doc docs/pakiti2_configuration_example_Debian_Ubuntu_SL_SLC.sql
-%doc docs/pakiti2_configuration_example_RH_SL_SLC.sql
+%doc install/pakiti2.sql
+#%doc docs/pakiti2.apache2
+#%doc docs/pakiti2_configuration_example_Debian_Ubuntu_SL_SLC.sql
+#%doc docs/pakiti2_configuration_example_RH_SL_SLC.sql
 %doc README.md
 
-%post client-manual
+#%post client-manual
 #if [ "$1" = 1 ]; then
 #   /sbin/chkconfig --add pakiti2
 #   /sbin/chkconfig pakiti2 on
 #else
 #   /sbin/chkconfig pakiti2 reset
 #fi
-echo "See README file in /usr/share/doc/pakiti-client-2.1/"
+#echo "See README file in /usr/share/doc/pakiti-client-2.1/"
 
 #%preun client
 #if [ "$1" = 0 ]; then
@@ -213,12 +215,12 @@ echo "See README file in /usr/share/doc/pakiti-client-2.1/"
 #   /sbin/chkconfig --del pakiti2
 #fi
 
-%post server
+#%post server
 #echo "After configuring MySQL, Apache and /etc/pakiti/pakiti-server.conf"
-/sbin/chkconfig --level 234 pakiti2 on
+#/sbin/chkconfig --level 234 pakiti2 on
 
-%preun server
-/sbin/chkconfig --level 234 pakiti2 off
+#%preun server
+#/sbin/chkconfig --level 234 pakiti2 off
 
 %changelog
 %include CHANGELOG
