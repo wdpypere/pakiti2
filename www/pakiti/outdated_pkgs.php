@@ -602,7 +602,7 @@ while($row = mysql_fetch_row($hosts) ) {
 
 
 
-<?
+<?php
 
 $mtime = microtime();
    $mtime = explode(" ",$mtime);
