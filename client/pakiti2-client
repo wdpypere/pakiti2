@@ -21,6 +21,8 @@ VERBOSE=0
 DEBUG=0
 TMPFILE=`mktemp`
 
+sleep $[ ( $RANDOM % 300 )  + 1 ]s
+
 # Getting options
 while getopts "dvh" options; do
   case $options in
@@ -267,7 +269,7 @@ for SERVER in $SERVERS; do
 		# Preparing curl string
 		if [ "X${CA_PATH}" != "X" ];
 		        then
-		        CURL="${CURL} --connect-timeout 30 --capath \"${CA_PATH}\"";
+		        CURL="${CURL} --connect-timeout 30 --capath ${CA_PATH}";
 		fi
 		
 		# Set output interface
@@ -303,7 +305,9 @@ for SERVER in $SERVERS; do
 		CURL="${CURL} -F os=\"${OS}\"";
 		CURL="${CURL} -F report=\"${REPORT}\"";
 		CURL="${CURL} -F proxy=\"${IS_PROXY}\"";
+		CURL="${CURL} -F site=UGent";
 		CURL="${CURL} -F pkgs=\<${TMPFILE}";
+
 		COMMAND="${CURL_BIN}${CURL} https://${SERVER}${SERVER_URL}"
 	
 	elif [ "X${METHOD}" = "Xstdout" ]; then

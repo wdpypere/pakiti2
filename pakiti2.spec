@@ -1,6 +1,6 @@
 Version: 2.1.6
 Name: pakiti2
-Release: 1.ug
+Release: 1.ug.1
 
 License: BSD
 Source: http://pakiti.sourceforge.net/rpms/%{name}/%{name}-%{version}.tar.gz

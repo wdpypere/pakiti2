@@ -50,7 +50,7 @@ $anonymous_link_lifetime = 604800;
 $secret = 'abcdefghijklmnopqrstuv1234567890!@#$%^&*()';
 
 # Enable/disable Outdated/missing packages view (off by default)
-$ext_pages_outdated = 0;
+$ext_pages_outdated = 1;
 
 # Enable ansynchronous mode (vulnerabilities won't be checked when host reporting, but by running scripts/recalculate_vulnerabilities.php script)
 $asynchronous_mode = 0;
