@@ -85,12 +85,12 @@ if ($site != "") {
 
 <?php
 # SQL query to get the list of affected countries, cves and sites
+
 $sql = "SELECT DISTINCT 
 		site.name, site.country, cve.cve_name, site.roc
 	FROM 
 		cve_tags, cve, cves, installed_pkgs_cves, host, site
 	WHERE 
-		host.admin = '$pakiti_tag' AND
 		cve_tags.enabled = 1 AND
 		cve_tags.cve_name=cve.cve_name AND
 		cve.cves_id=cves.id AND
@@ -114,11 +114,13 @@ if (!$sqlres = mysql_query($sql)) {
 	print "ERROR: " . mysql_error();
 }
 
+
+
 # Create arrays for each tag
 foreach($cve_tags as $t) {
-	${"sites_${$t}"} = array();
-	${"countries_${$t}"} = array();
-	${"rocs_${$t}"} = array();
+	${"sites_$t"} = array();
+	${"countries_$t"} = array();
+	${"rocs_$t"} = array();
 }
 
 while ($row = mysql_fetch_row($sqlres)) {
@@ -149,7 +151,6 @@ $sql = "SELECT DISTINCT
 	FROM 
 		cve_tags, cve, cves, installed_pkgs_cves, host, site, arch, os
 	WHERE 
-		host.admin = '$pakiti_tag' AND
 		cve_tags.enabled = 1 AND
 		cve_tags.cve_name=cve.cve_name AND
 		cve.cves_id=cves.id AND
